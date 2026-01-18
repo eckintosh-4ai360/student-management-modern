@@ -1,4 +1,5 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 
 interface DialogProps {
@@ -8,9 +9,15 @@ interface DialogProps {
 }
 
 export function Dialog({ open, onOpenChange, children }: DialogProps) {
-  if (!open) return null;
+  const [isMounted, setIsMounted] = React.useState(false);
 
-  return (
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!open || !isMounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
@@ -19,7 +26,8 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
       <div className="relative z-50 max-h-[90vh] overflow-auto">
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -27,7 +35,11 @@ interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-export function DialogContent({ children, className, ...props }: DialogContentProps) {
+export function DialogContent({
+  children,
+  className,
+  ...props
+}: DialogContentProps) {
   return (
     <div
       className={cn(
@@ -45,7 +57,11 @@ interface DialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-export function DialogHeader({ children, className, ...props }: DialogHeaderProps) {
+export function DialogHeader({
+  children,
+  className,
+  ...props
+}: DialogHeaderProps) {
   return (
     <div className={cn("mb-4", className)} {...props}>
       {children}
@@ -57,7 +73,11 @@ interface DialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;
 }
 
-export function DialogTitle({ children, className, ...props }: DialogTitleProps) {
+export function DialogTitle({
+  children,
+  className,
+  ...props
+}: DialogTitleProps) {
   return (
     <h2 className={cn("text-2xl font-bold", className)} {...props}>
       {children}
@@ -65,11 +85,16 @@ export function DialogTitle({ children, className, ...props }: DialogTitleProps)
   );
 }
 
-interface DialogDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+interface DialogDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
 }
 
-export function DialogDescription({ children, className, ...props }: DialogDescriptionProps) {
+export function DialogDescription({
+  children,
+  className,
+  ...props
+}: DialogDescriptionProps) {
   return (
     <p className={cn("text-gray-600 text-sm mt-1", className)} {...props}>
       {children}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -46,6 +46,18 @@ export function EditStudentModal({ open, onOpenChange, student, grades, classes,
   const [selectedGrade, setSelectedGrade] = useState(student.grade.id.toString());
   const [imagePreview, setImagePreview] = useState<string | null>(student.img || null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!open) {
+      setImagePreview(student.img || null);
+      setImageFile(null);
+      setErrors({});
+      setMessage("");
+      setBirthday(new Date(student.birthday));
+      setSelectedGrade(student.grade.id.toString());
+    }
+  }, [open, student]);
 
   const filteredClasses = classes.filter(cls => cls.gradeId === parseInt(selectedGrade));
 
@@ -135,8 +147,9 @@ export function EditStudentModal({ open, onOpenChange, student, grades, classes,
                     <Image
                       src={imagePreview}
                       alt="Profile preview"
-                      fill
-                      className="object-cover"
+                      width={96}
+                      height={96}
+                      className="object-cover w-full h-full"
                     />
                     <button
                       type="button"

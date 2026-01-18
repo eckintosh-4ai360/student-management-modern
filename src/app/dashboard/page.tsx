@@ -195,7 +195,8 @@ export default async function DashboardPage() {
 
         {/* Main Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-l-4 border-l-blue-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
+          <Link href="/dashboard/students">
+            <Card className="border-l-4 border-l-blue-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Total Students
@@ -212,8 +213,10 @@ export default async function DashboardPage() {
               </p>
             </CardContent>
           </Card>
+          </Link>
 
-          <Card className="border-l-4 border-l-green-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
+          <Link href="/dashboard/teachers">
+            <Card className="border-l-4 border-l-green-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Total Staff
@@ -230,8 +233,10 @@ export default async function DashboardPage() {
               </p>
             </CardContent>
           </Card>
+          </Link>
 
-          <Card className="border-l-4 border-l-purple-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
+          <Link href="/dashboard/parents">
+            <Card className="border-l-4 border-l-purple-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Total Parents
@@ -248,8 +253,10 @@ export default async function DashboardPage() {
               </p>
             </CardContent>
           </Card>
+          </Link>
 
-          <Card className="border-l-4 border-l-orange-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
+          <Link href="/dashboard/attendance">
+            <Card className="border-l-4 border-l-orange-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Attendance This Week
@@ -266,6 +273,7 @@ export default async function DashboardPage() {
               </p>
             </CardContent>
           </Card>
+          </Link>
         </div>
 
         {/* Charts and Analytics Section */}

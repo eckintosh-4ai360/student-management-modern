@@ -60,7 +60,7 @@ export function TeacherTableRow({ teacher, allSubjects }: TeacherTableRowProps) 
                   alt={`${teacher.name} ${teacher.surname}`}
                   width={40}
                   height={40}
-                  className="object-cover w-full h-full"
+                  className="object-cover"
                 />
               </div>
             ) : (

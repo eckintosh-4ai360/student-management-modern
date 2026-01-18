@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,18 @@ export function AddTeacherModal({ open, onOpenChange, subjects }: AddTeacherModa
   const [birthday, setBirthday] = useState<Date | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!open) {
+      setImagePreview(null);
+      setImageFile(null);
+      setErrors({});
+      setMessage("");
+      setBirthday(null);
+      setSelectedSubjects([]);
+    }
+  }, [open]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,7 +83,7 @@ export function AddTeacherModal({ open, onOpenChange, subjects }: AddTeacherModa
     const validation = teacherSchema.safeParse(data);
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {};
-      validation.error.errors.forEach((err) => {
+      validation.error.issues.forEach((err) => {
         if (err.path[0]) {
           fieldErrors[err.path[0] as string] = err.message;
         }
@@ -121,8 +133,9 @@ export function AddTeacherModal({ open, onOpenChange, subjects }: AddTeacherModa
                     <Image
                       src={imagePreview}
                       alt="Profile preview"
-                      fill
-                      className="object-cover"
+                      width={96}
+                      height={96}
+                      className="object-cover w-full h-full"
                     />
                     <button
                       type="button"

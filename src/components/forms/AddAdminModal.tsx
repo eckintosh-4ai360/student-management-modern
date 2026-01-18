@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,16 @@ export function AddAdminModal({ open, onOpenChange }: AddAdminModalProps) {
   const [message, setMessage] = useState<string>("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!open) {
+      setImagePreview(null);
+      setImageFile(null);
+      setErrors({});
+      setMessage("");
+    }
+  }, [open]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,7 +71,7 @@ export function AddAdminModal({ open, onOpenChange }: AddAdminModalProps) {
     const validation = adminSchema.safeParse(data);
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {};
-      validation.error.errors.forEach((err) => {
+      validation.error.issues.forEach((err) => {
         if (err.path[0]) {
           fieldErrors[err.path[0] as string] = err.message;
         }
@@ -103,8 +113,9 @@ export function AddAdminModal({ open, onOpenChange }: AddAdminModalProps) {
                     <Image
                       src={imagePreview}
                       alt="Profile preview"
-                      fill
-                      className="object-cover"
+                      width={96}
+                      height={96}
+                      className="object-cover w-full h-full"
                     />
                     <button
                       type="button"

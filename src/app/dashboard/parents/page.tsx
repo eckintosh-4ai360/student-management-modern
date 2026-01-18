@@ -1,15 +1,32 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AddParentButton } from "@/components/forms/AddParentButton";
 import { SearchBar } from "@/components/ui/search-bar";
+import { ParentTableRow } from "@/components/tables/ParentTableRow";
 
 export default async function ParentsPage({
   searchParams,
 }: {
   searchParams: Promise<{ page?: string; search?: string }>;
 }) {
+  const session = await getServerSession(authOptions);
+  
+  if (!session || !session.user) {
+    redirect("/login");
+  }
+
+  const userRole = (session?.user as any)?.role || "student";
+  
+  // Only allow admin and super admin to access this page
+  if (userRole !== "admin") {
+    redirect("/dashboard");
+  }
+
   const params = await searchParams;
   const page = parseInt(params.page || "1");
   const pageSize = 10;
@@ -24,6 +41,7 @@ export default async function ParentsPage({
       { username: { contains: search } },
       { email: { contains: search } },
       { phone: { contains: search } },
+      { address: { contains: search } },
     ];
   }
 
@@ -32,8 +50,15 @@ export default async function ParentsPage({
       where,
       include: {
         students: {
-          include: {
-            class: true,
+          select: {
+            id: true,
+            name: true,
+            surname: true,
+          },
+        },
+        _count: {
+          select: {
+            students: true,
           },
         },
       },
@@ -57,7 +82,7 @@ export default async function ParentsPage({
       </div>
 
       <div className="flex items-center gap-4">
-        <SearchBar placeholder="Search parents by name, username, email, or phone..." />
+        <SearchBar placeholder="Search parents by name, username, email, phone, or address..." />
       </div>
 
       <Card>
@@ -70,44 +95,28 @@ export default async function ParentsPage({
               <thead>
                 <tr className="border-b">
                   <th className="text-left p-4 font-medium">Parent</th>
-                  <th className="text-left p-4 font-medium">Children</th>
-                  <th className="text-left p-4 font-medium">Phone</th>
                   <th className="text-left p-4 font-medium">Email</th>
+                  <th className="text-left p-4 font-medium">Phone</th>
+                  <th className="text-left p-4 font-medium">Address</th>
+                  <th className="text-left p-4 font-medium">Students</th>
                   <th className="text-left p-4 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {parents.map((parent) => (
-                  <tr key={parent.id} className="border-b hover:bg-gray-50">
-                    <td className="p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                          <span className="text-sm font-semibold text-purple-700">
-                            {parent.name.charAt(0)}{parent.surname.charAt(0)}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="font-medium">{parent.name} {parent.surname}</p>
-                          <p className="text-sm text-gray-500">@{parent.username}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="space-y-1">
-                        {parent.students.map((student) => (
-                          <div key={student.id} className="text-sm">
-                            {student.name} {student.surname} ({student.class.name})
-                          </div>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="p-4 text-sm">{parent.phone}</td>
-                    <td className="p-4 text-sm">{parent.email || "-"}</td>
-                    <td className="p-4">
-                      <Button variant="outline" size="sm">View</Button>
+                {parents.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="p-8 text-center text-gray-500">
+                      No parents found. Click "Add Parent" to create a new parent.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  parents.map((parent) => (
+                    <ParentTableRow 
+                      key={parent.id} 
+                      parent={parent}
+                    />
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -137,4 +146,3 @@ export default async function ParentsPage({
     </div>
   );
 }
-

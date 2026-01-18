@@ -64,7 +64,7 @@ export function StudentTableRow({ student, grades, classes, parents }: StudentTa
                   alt={`${student.name} ${student.surname}`}
                   width={40}
                   height={40}
-                  className="object-cover w-full h-full"
+                  className="object-cover"
                 />
               </div>
             ) : (

@@ -44,7 +44,7 @@ export function AddFeeModal({ open, onOpenChange, students }: AddFeeModalProps) 
     const validation = feeSchema.safeParse(data);
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {};
-      validation.error.errors.forEach((err) => {
+      validation.error.issues.forEach((err) => {
         if (err.path[0]) {
           fieldErrors[err.path[0] as string] = err.message;
         }

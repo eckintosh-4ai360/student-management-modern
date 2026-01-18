@@ -42,7 +42,7 @@ export function AddClassModal({ open, onOpenChange, grades, teachers }: AddClass
     const validation = classSchema.safeParse(data);
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {};
-      validation.error.errors.forEach((err) => {
+      validation.error.issues.forEach((err) => {
         if (err.path[0]) {
           fieldErrors[err.path[0] as string] = err.message;
         }

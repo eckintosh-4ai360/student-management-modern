@@ -54,7 +54,7 @@ export function AdminTableRow({ admin }: AdminTableRowProps) {
                   alt={admin.name}
                   width={40}
                   height={40}
-                  className="object-cover w-full h-full"
+                  className="object-cover"
                 />
               </div>
             ) : (

@@ -141,6 +141,8 @@ export default function Sidebar() {
   const [schoolName, setSchoolName] = useState("SMS");
   const [schoolFullName, setSchoolFullName] = useState("Student Management");
   const [schoolLogo, setSchoolLogo] = useState("/img/ECKINTOSH LOGO.png");
+  const [primaryColor, setPrimaryColor] = useState("#3b82f6");
+  const [secondaryColor, setSecondaryColor] = useState("#8b5cf6");
 
   useEffect(() => {
     // Fetch school settings for branding
@@ -150,6 +152,8 @@ export default function Sidebar() {
         if (data.schoolShortName) setSchoolName(data.schoolShortName);
         if (data.schoolName) setSchoolFullName(data.schoolName);
         if (data.schoolLogo) setSchoolLogo(data.schoolLogo);
+        if (data.primaryColor) setPrimaryColor(data.primaryColor);
+        if (data.secondaryColor) setSecondaryColor(data.secondaryColor);
       })
       .catch(() => {
         // Use defaults if fetch fails
@@ -193,8 +197,8 @@ export default function Sidebar() {
               }}
             />
             <div>
-              <h1 className="text-xl font-bold text-primary">{schoolName}</h1>
-              <p className="text-xs text-gray-500">{schoolFullName}</p>
+              <h1 className="text-xl font-bold" style={{ color: primaryColor }}>{schoolName}</h1>
+              <p className="text-xs" style={{ color: secondaryColor }}>{schoolFullName}</p>
             </div>
           </div>
           {/* Close button for mobile */}
@@ -225,12 +229,22 @@ export default function Sidebar() {
                     }}
                     className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                       isActive
-                        ? "bg-primary text-white"
-                        : "text-gray-700 hover:bg-gray-100"
+                        ? "text-white"
+                        : "hover:bg-gray-100"
                     }`}
+                    style={
+                      isActive
+                        ? {
+                            backgroundColor: primaryColor,
+                          }
+                        : {}
+                    }
                   >
-                    <Icon className="w-5 h-5" />
-                    <span>{item.title}</span>
+                    <Icon 
+                      className="w-5 h-5" 
+                      style={{ color: isActive ? "white" : primaryColor }}
+                    />
+                    <span style={{ color: isActive ? "white" : secondaryColor }}>{item.title}</span>
                   </Link>
                 </li>
               );
