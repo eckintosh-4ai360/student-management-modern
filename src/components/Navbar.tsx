@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EditProfileModal } from "./forms/EditProfileModal";
 import { useSidebar } from "@/contexts/SidebarContext";
+import Image from "next/image";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -128,8 +129,18 @@ export default function Navbar() {
             }}
             className="flex items-center space-x-3 hover:bg-gray-100 rounded-lg p-2 transition-colors"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold shadow-md">
-              {session?.user?.name?.charAt(0).toUpperCase()}
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold shadow-md overflow-hidden">
+              {userData?.img ? (
+                <Image
+                  src={userData.img}
+                  alt={session?.user?.name || "User"}
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                session?.user?.name?.charAt(0).toUpperCase()
+              )}
             </div>
             <div className="hidden md:block text-left">
               <p className="text-sm font-semibold text-gray-900">

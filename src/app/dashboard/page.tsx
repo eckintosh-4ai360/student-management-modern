@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import { getSystemSettings } from "@/lib/settings";
+import EnrollmentChart from "@/components/EnrollmentChart";
 
 export default async function DashboardPage() {
   let session;
@@ -50,6 +51,7 @@ export default async function DashboardPage() {
     studentsData,
     recentEvents,
     recentAnnouncements,
+    classesEnrollment,
   ] = await Promise.all([
     prisma.student.count(),
     prisma.teacher.count(),
@@ -89,29 +91,18 @@ export default async function DashboardPage() {
       },
       take: 5,
     }),
+    prisma.class.findMany({
+      include: {
+        students: true,
+        grade: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    }),
   ]);
 
-  // Calculate attendance statistics
-  const thisWeekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
-  const thisWeekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
-  const daysOfWeek = eachDayOfInterval({ start: thisWeekStart, end: thisWeekEnd });
-
-  const weeklyAttendance = daysOfWeek.map((day) => {
-    const dayAttendances = studentsData.flatMap((s) =>
-      s.attendances.filter(
-        (a) => format(new Date(a.date), "yyyy-MM-dd") === format(day, "yyyy-MM-dd")
-      )
-    );
-    const present = dayAttendances.filter((a) => a.present).length;
-    const absent = dayAttendances.filter((a) => !a.present).length;
-    return {
-      day: format(day, "EEE"),
-      present,
-      absent,
-      total: present + absent,
-    };
-  });
-
+  // Calculate attendance statistics for display on stat cards
   const totalAttendances = studentsData.reduce((sum, s) => sum + s.attendances.length, 0);
   const presentCount = studentsData.reduce(
     (sum, s) => sum + s.attendances.filter((a) => a.present).length,
@@ -340,65 +331,28 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Attendance This Week Chart */}
+          {/* Class Enrollment Chart */}
           <Card className="hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-green-50 to-teal-50">
-              <CardTitle className="flex items-center justify-between">
-                <span className="flex items-center">
-                  <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
-                  Attendance This Week
-                </span>
-                <span className="text-2xl font-bold text-green-600">{attendanceRate.toFixed(0)}%</span>
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50">
+              <CardTitle className="flex items-center">
+                <BarChart3 className="w-5 h-5 mr-2 text-purple-600" />
+                Enrollment Breakdown
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="space-y-4">
-                {weeklyAttendance.map((day, idx) => {
-                  const presentPercent = day.total > 0 ? (day.present / day.total) * 100 : 0;
-                  return (
-                    <div key={idx}>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">{day.day}</span>
-                        <span className="text-sm text-gray-600">
-                          {day.present} / {day.total}
-                        </span>
-                      </div>
-                      <div className="relative h-8 bg-gray-100 rounded-full overflow-hidden">
-                        <div
-                          className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center transition-all duration-500"
-                          style={{ width: `${presentPercent}%` }}
-                        >
-                          {presentPercent > 20 && (
-                            <span className="text-xs font-semibold text-white">
-                              {presentPercent.toFixed(0)}%
-                            </span>
-                          )}
-                        </div>
-                        {presentPercent < 100 && (
-                          <div
-                            className="absolute inset-y-0 right-0 bg-gradient-to-r from-gray-400 to-gray-600 flex items-center justify-center"
-                            style={{ width: `${100 - presentPercent}%` }}
-                          >
-                            {100 - presentPercent > 20 && (
-                              <span className="text-xs font-semibold text-white">
-                                {(100 - presentPercent).toFixed(0)}%
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+              <div style={{ height: '300px' }}>
+                <EnrollmentChart classes={classesEnrollment} />
               </div>
-              <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t">
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-green-500 rounded mr-2"></div>
-                  <span className="text-sm">Present</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-gray-500 rounded mr-2"></div>
-                  <span className="text-sm">Absent</span>
+              <div className="mt-6 pt-4 border-t">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 rounded-lg">
+                    <p className="text-xs text-gray-600 font-medium">Total Classes</p>
+                    <p className="text-2xl font-bold text-purple-600 mt-1">{classesEnrollment.length}</p>
+                  </div>
+                  <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 rounded-lg">
+                    <p className="text-xs text-gray-600 font-medium">Total Enrolled</p>
+                    <p className="text-2xl font-bold text-indigo-600 mt-1">{totalStudents}</p>
+                  </div>
                 </div>
               </div>
             </CardContent>

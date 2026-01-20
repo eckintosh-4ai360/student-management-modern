@@ -99,7 +99,7 @@ export function EditTeacherModal({ open, onOpenChange, teacher, subjects }: Edit
       bloodType: formData.get("bloodType") as string,
       sex: formData.get("sex") as string,
       birthday: birthday!,
-      subjects: selectedSubjects,
+      subjects: selectedSubjects.map(String), // Convert numbers to strings
       password: formData.get("password") as string || undefined,
       img: imagePreview || undefined,
     };
@@ -236,8 +236,8 @@ export function EditTeacherModal({ open, onOpenChange, teacher, subjects }: Edit
             <div className="space-y-2">
               <Label htmlFor="sex">Gender *</Label>
               <Select id="sex" name="sex" defaultValue={teacher.sex} required>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
               </Select>
               {errors.sex && <p className="text-red-500 text-xs">{errors.sex}</p>}
             </div>

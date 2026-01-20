@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import prisma from "./prisma";
 import bcrypt from "bcryptjs";
+import fs from "fs";
+import path from "path";
 import {
   StudentSchema,
   TeacherSchema,
@@ -29,10 +31,26 @@ export const createStudent = async (
 ): Promise<ActionState> => {
   try {
     const hashedPassword = await bcrypt.hash(data.password || "student123", 10);
+    
+    // Generate unique studentId
+    const year = new Date().getFullYear();
+    const lastStudent = await prisma.student.findFirst({
+      where: { studentId: { startsWith: `STU-${year}-` } },
+      orderBy: { createdAt: "desc" },
+    });
+    
+    let nextNumber = 1;
+    if (lastStudent) {
+      const lastNumber = parseInt(lastStudent.studentId.split("-")[2]);
+      nextNumber = lastNumber + 1;
+    }
+    
+    const studentId = `STU-${year}-${String(nextNumber).padStart(3, "0")}`;
 
     await prisma.student.create({
       data: {
         username: data.username,
+        studentId: studentId,
         password: hashedPassword,
         name: data.name,
         surname: data.surname,
@@ -125,10 +143,25 @@ export const createTeacher = async (
 ): Promise<ActionState> => {
   try {
     const hashedPassword = await bcrypt.hash(data.password || "teacher123", 10);
+    
+    // Generate unique staffId
+    const lastTeacher = await prisma.teacher.findFirst({
+      where: { staffId: { startsWith: "STAFF-TCH-" } },
+      orderBy: { createdAt: "desc" },
+    });
+    
+    let nextNumber = 1;
+    if (lastTeacher) {
+      const lastNumber = parseInt(lastTeacher.staffId.split("-")[2]);
+      nextNumber = lastNumber + 1;
+    }
+    
+    const staffId = `STAFF-TCH-${String(nextNumber).padStart(3, "0")}`;
 
     await prisma.teacher.create({
       data: {
         username: data.username,
+        staffId: staffId,
         password: hashedPassword,
         name: data.name,
         surname: data.surname,
@@ -804,6 +837,7 @@ export const updateUserProfile = async (
     const phone = formData.get("phone") as string;
     const currentPassword = formData.get("currentPassword") as string;
     const newPassword = formData.get("newPassword") as string;
+    const profileImage = formData.get("profileImage") as File | null;
 
     // Prepare update data
     const updateData: any = {
@@ -812,6 +846,33 @@ export const updateUserProfile = async (
       email: email || null,
       phone: phone || null,
     };
+
+    // Handle image upload if provided
+    if (profileImage) {
+      try {
+        const bytes = await profileImage.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        
+        // Create unique filename
+        const timestamp = Date.now();
+        const filename = `${userId}-${timestamp}-${profileImage.name}`;
+        const uploadDir = path.join(process.cwd(), "public/uploads");
+        
+        // Ensure upload directory exists
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        
+        const filepath = path.join(uploadDir, filename);
+        fs.writeFileSync(filepath, buffer);
+        
+        // Store relative path in database
+        updateData.img = `/uploads/${filename}`;
+      } catch (imageError) {
+        console.error("Image upload error:", imageError);
+        return { success: false, error: true, message: "Failed to upload image" };
+      }
+    }
 
     // If password change is requested, verify current password and hash new one
     if (currentPassword && newPassword) {
@@ -1168,10 +1229,25 @@ export const createAdmin = async (
 ): Promise<ActionState> => {
   try {
     const hashedPassword = await bcrypt.hash(data.password || "admin123", 10);
+    
+    // Generate unique staffId
+    const lastAdmin = await prisma.admin.findFirst({
+      where: { staffId: { startsWith: "STAFF-ADM-" } },
+      orderBy: { createdAt: "desc" },
+    });
+    
+    let nextNumber = 1;
+    if (lastAdmin) {
+      const lastNumber = parseInt(lastAdmin.staffId.split("-")[2]);
+      nextNumber = lastNumber + 1;
+    }
+    
+    const staffId = `STAFF-ADM-${String(nextNumber).padStart(3, "0")}`;
 
     await prisma.admin.create({
       data: {
         username: data.username,
+        staffId: staffId,
         password: hashedPassword,
         name: data.name,
         email: data.email || null,
@@ -1299,4 +1375,3 @@ export const updateSystemSettings = async (
     return { success: false, error: true, message: "Failed to update settings!" };
   }
 };
-

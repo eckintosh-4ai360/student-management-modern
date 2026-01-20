@@ -44,6 +44,7 @@ export function EditStudentModal({ open, onOpenChange, student, grades, classes,
   const [message, setMessage] = useState<string>("");
   const [birthday, setBirthday] = useState<Date | null>(new Date(student.birthday));
   const [selectedGrade, setSelectedGrade] = useState(student.grade.id.toString());
+  const [selectedClass, setSelectedClass] = useState(student.class.id.toString());
   const [imagePreview, setImagePreview] = useState<string | null>(student.img || null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -56,10 +57,38 @@ export function EditStudentModal({ open, onOpenChange, student, grades, classes,
       setMessage("");
       setBirthday(new Date(student.birthday));
       setSelectedGrade(student.grade.id.toString());
+      setSelectedClass(student.class.id.toString());
     }
   }, [open, student]);
 
-  const filteredClasses = classes.filter(cls => cls.gradeId === parseInt(selectedGrade));
+  // Filter classes by selected grade - handle both numeric and string IDs
+  const selectedGradeInt = parseInt(selectedGrade);
+  const filteredClasses = classes.filter(cls => {
+    // Handle cases where gradeId might be string or number
+    const clsGradeId = typeof cls.gradeId === 'string' ? parseInt(cls.gradeId) : cls.gradeId;
+    return clsGradeId === selectedGradeInt;
+  });
+
+  // If no filtered classes, show all classes (fallback)
+  const displayClasses = filteredClasses.length > 0 ? filteredClasses : classes;
+
+  // Update selectedClass when grade changes
+  const handleGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newGradeId = e.target.value;
+    setSelectedGrade(newGradeId);
+    
+    // Find classes for new grade
+    const newGradeInt = parseInt(newGradeId);
+    const newFilteredClasses = classes.filter(cls => {
+      const clsGradeId = typeof cls.gradeId === 'string' ? parseInt(cls.gradeId) : cls.gradeId;
+      return clsGradeId === newGradeInt;
+    });
+    
+    // Set first class of new grade, or keep current if none found
+    if (newFilteredClasses.length > 0) {
+      setSelectedClass(newFilteredClasses[0].id.toString());
+    }
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -84,6 +113,36 @@ export function EditStudentModal({ open, onOpenChange, student, grades, classes,
     setMessage("");
 
     const formData = new FormData(e.currentTarget);
+    let imagePath: string | undefined = student.img || undefined;
+
+    // Upload image if a new one was selected
+    if (imageFile) {
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", imageFile);
+
+      try {
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          setMessage("Failed to upload image: " + (errorData.error || "Unknown error"));
+          return;
+        }
+
+        const uploadResult = await uploadResponse.json();
+        if (uploadResult.success) {
+          imagePath = uploadResult.path;
+        }
+      } catch (error) {
+        console.error("Image upload error:", error);
+        setMessage("Failed to upload image");
+        return;
+      }
+    }
+
     const data = {
       id: student.id,
       username: formData.get("username") as string,
@@ -99,7 +158,7 @@ export function EditStudentModal({ open, onOpenChange, student, grades, classes,
       classId: parseInt(formData.get("classId") as string),
       parentId: formData.get("parentId") as string,
       password: formData.get("password") as string || undefined,
-      img: imagePreview || undefined,
+      img: imagePath,
     };
 
     const validation = studentSchema.safeParse(data);
@@ -261,7 +320,7 @@ export function EditStudentModal({ open, onOpenChange, student, grades, classes,
                 id="gradeId" 
                 name="gradeId" 
                 value={selectedGrade}
-                onChange={(e) => setSelectedGrade(e.target.value)}
+                onChange={handleGradeChange}
                 required
               >
                 {grades.map((grade) => (
@@ -275,12 +334,22 @@ export function EditStudentModal({ open, onOpenChange, student, grades, classes,
 
             <div className="space-y-2">
               <Label htmlFor="classId">Class *</Label>
-              <Select id="classId" name="classId" defaultValue={student.class.id.toString()} required>
-                {filteredClasses.map((cls) => (
-                  <option key={cls.id} value={cls.id}>
-                    {cls.name}
-                  </option>
-                ))}
+              <Select 
+                id="classId" 
+                name="classId" 
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
+                required
+              >
+                {displayClasses.length > 0 ? (
+                  displayClasses.map((cls) => (
+                    <option key={cls.id} value={cls.id}>
+                      {cls.name}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No classes available</option>
+                )}
               </Select>
               {errors.classId && <p className="text-red-500 text-xs">{errors.classId}</p>}
             </div>

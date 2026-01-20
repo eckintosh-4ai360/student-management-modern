@@ -64,6 +64,36 @@ export function AddStudentModal({ open, onOpenChange, parents, classes, grades }
     setMessage("");
 
     const formData = new FormData(e.currentTarget);
+    let imagePath: string | undefined = undefined;
+
+    // Upload image if selected
+    if (imageFile) {
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", imageFile);
+
+      try {
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          setMessage("Failed to upload image: " + (errorData.error || "Unknown error"));
+          return;
+        }
+
+        const uploadResult = await uploadResponse.json();
+        if (uploadResult.success) {
+          imagePath = uploadResult.path;
+        }
+      } catch (error) {
+        console.error("Image upload error:", error);
+        setMessage("Failed to upload image");
+        return;
+      }
+    }
+
     const data = {
       username: formData.get("username") as string,
       password: formData.get("password") as string,
@@ -78,7 +108,7 @@ export function AddStudentModal({ open, onOpenChange, parents, classes, grades }
       gradeId: parseInt(formData.get("gradeId") as string),
       classId: parseInt(formData.get("classId") as string),
       parentId: formData.get("parentId") as string,
-      img: imagePreview || undefined,
+      img: imagePath || undefined,
     };
 
     // Validate
@@ -120,7 +150,7 @@ export function AddStudentModal({ open, onOpenChange, parents, classes, grades }
           <div className="grid grid-cols-2 gap-4">
             {/* Profile Picture Upload */}
             <div className="space-y-2 col-span-2">
-              <Label htmlFor="img">Profile Picture</Label>
+              <Label htmlFor="img">Profile Picture (Optional)</Label>
               <div className="flex items-center gap-4">
                 {imagePreview ? (
                   <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">

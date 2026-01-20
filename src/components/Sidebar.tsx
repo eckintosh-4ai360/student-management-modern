@@ -4,131 +4,180 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { 
-  Home, Users, GraduationCap, BookOpen, Calendar, 
+import {
+  Home, Users, GraduationCap, BookOpen, Calendar,
   FileText, ClipboardList, Bell, LogOut, Settings,
   BarChart3, UserCircle, Banknote, Award, MessageSquare,
-  ShieldCheck, X
+  ShieldCheck, X, ChevronDown, ChevronRight
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useSidebar } from "@/contexts/SidebarContext";
 
-const menuItems = [
+// Menu structure with grouped categories
+const menuCategories = [
   {
     title: "Dashboard",
     icon: Home,
-    href: "/dashboard",
-    roles: ["admin", "teacher", "student", "parent"],
+    items: [
+      {
+        title: "Dashboard",
+        icon: Home,
+        href: "/dashboard",
+        roles: ["admin", "teacher", "student", "parent"],
+      },
+    ],
   },
   {
-    title: "Admins",
-    icon: ShieldCheck,
-    href: "/dashboard/admins",
-    roles: ["admin"],
-    adminOnly: true, // Only for SUPER_ADMIN
+    title: "User Management",
+    icon: Users,
+    items: [
+      {
+        title: "Admins",
+        icon: ShieldCheck,
+        href: "/dashboard/admins",
+        roles: ["admin"],
+        adminOnly: true,
+      },
+      {
+        title: "Teachers",
+        icon: Users,
+        href: "/dashboard/teachers",
+        roles: ["admin"],
+      },
+      {
+        title: "Students",
+        icon: GraduationCap,
+        href: "/dashboard/students",
+        roles: ["admin", "teacher"],
+      },
+      {
+        title: "Parents",
+        icon: UserCircle,
+        href: "/dashboard/parents",
+        roles: ["admin"],
+      },
+    ],
   },
   {
-    title: "Students",
+    title: "Academics",
     icon: GraduationCap,
-    href: "/dashboard/students",
-    roles: ["admin", "teacher"],
+    items: [
+      {
+        title: "Classes",
+        icon: Users,
+        href: "/dashboard/classes",
+        roles: ["admin"],
+      },
+      {
+        title: "Subjects",
+        icon: BookOpen,
+        href: "/dashboard/subjects",
+        roles: ["admin"],
+      },
+      {
+        title: "Lessons",
+        icon: FileText,
+        href: "/dashboard/lessons",
+        roles: ["admin", "teacher"],
+      },
+    ],
   },
   {
-    title: "Teachers",
-    icon: Users,
-    href: "/dashboard/teachers",
-    roles: ["admin"],
-  },
-  {
-    title: "Parents",
-    icon: UserCircle,
-    href: "/dashboard/parents",
-    roles: ["admin"],
-  },
-  {
-    title: "Classes",
-    icon: Users,
-    href: "/dashboard/classes",
-    roles: ["admin"],
-  },
-  {
-    title: "Subjects",
-    icon: BookOpen,
-    href: "/dashboard/subjects",
-    roles: ["admin"],
-  },
-  {
-    title: "Lessons",
-    icon: FileText,
-    href: "/dashboard/lessons",
-    roles: ["admin", "teacher"],
-  },
-  {
-    title: "Exams",
+    title: "Assessments",
     icon: ClipboardList,
-    href: "/dashboard/exams",
-    roles: ["admin", "teacher", "student"],
+    items: [
+      {
+        title: "Exams",
+        icon: ClipboardList,
+        href: "/dashboard/exams",
+        roles: ["admin", "teacher", "student"],
+      },
+      {
+        title: "Assignments",
+        icon: FileText,
+        href: "/dashboard/assignments",
+        roles: ["admin", "teacher", "student"],
+      },
+      {
+        title: "Results",
+        icon: BarChart3,
+        href: "/dashboard/results",
+        roles: ["admin", "teacher", "student"],
+      },
+    ],
   },
   {
-    title: "Assignments",
-    icon: FileText,
-    href: "/dashboard/assignments",
-    roles: ["admin", "teacher", "student"],
-  },
-  {
-    title: "Results",
-    icon: BarChart3,
-    href: "/dashboard/results",
-    roles: ["admin", "teacher", "student"],
-  },
-  {
-    title: "Attendance",
+    title: "Attendance & Discipline",
     icon: Calendar,
-    href: "/dashboard/attendance",
-    roles: ["admin", "teacher", "student"],
+    items: [
+      {
+        title: "Attendance",
+        icon: Calendar,
+        href: "/dashboard/attendance",
+        roles: ["admin", "teacher", "student"],
+      },
+      {
+        title: "Behaviour",
+        icon: Award,
+        href: "/dashboard/behavior",
+        roles: ["admin", "teacher"],
+      },
+    ],
   },
   {
-    title: "Events",
-    icon: Calendar,
-    href: "/dashboard/events",
-    roles: ["admin", "teacher", "student", "parent"],
-  },
-  {
-    title: "Announcements",
-    icon: Bell,
-    href: "/dashboard/announcements",
-    roles: ["admin", "teacher", "student", "parent"],
-  },
-  {
-    title: "Behavior",
-    icon: Award,
-    href: "/dashboard/behavior",
-    roles: ["admin", "teacher"],
-  },
-  {
-    title: "Messages",
+    title: "Communication",
     icon: MessageSquare,
-    href: "/dashboard/messages",
-    roles: ["admin", "teacher", "student", "parent"],
+    items: [
+      {
+        title: "Announcements",
+        icon: Bell,
+        href: "/dashboard/announcements",
+        roles: ["admin", "teacher", "student", "parent"],
+      },
+      {
+        title: "Messages",
+        icon: MessageSquare,
+        href: "/dashboard/messages",
+        roles: ["admin", "teacher", "student", "parent"],
+      },
+      {
+        title: "Events",
+        icon: Calendar,
+        href: "/dashboard/events",
+        roles: ["admin", "teacher", "student", "parent"],
+      },
+    ],
   },
   {
-    title: "Fees & Bills",
+    title: "Finance",
     icon: Banknote,
-    href: "/dashboard/fees",
-    roles: ["admin", "parent"],
-  },
-  {
-    title: "My Fees",
-    icon: Banknote,
-    href: "/dashboard/fees",
-    roles: ["student"],
+    items: [
+      {
+        title: "Fees & Bills",
+        icon: Banknote,
+        href: "/dashboard/fees",
+        roles: ["admin", "parent"],
+      },
+      {
+        title: "My Fees",
+        icon: Banknote,
+        href: "/dashboard/fees",
+        roles: ["student"],
+      },
+    ],
   },
   {
     title: "Settings",
     icon: Settings,
-    href: "/dashboard/settings",
-    roles: ["admin"],
-    adminOnly: true, // Only for SUPER_ADMIN
+    items: [
+      {
+        title: "Settings",
+        icon: Settings,
+        href: "/dashboard/settings",
+        roles: ["admin"],
+        adminOnly: true,
+      },
+    ],
   },
 ];
 
@@ -143,6 +192,7 @@ export default function Sidebar() {
   const [schoolLogo, setSchoolLogo] = useState("/img/ECKINTOSH LOGO.png");
   const [primaryColor, setPrimaryColor] = useState("#3b82f6");
   const [secondaryColor, setSecondaryColor] = useState("#8b5cf6");
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(["Dashboard"]);
 
   useEffect(() => {
     // Fetch school settings for branding
@@ -158,17 +208,38 @@ export default function Sidebar() {
       .catch(() => {
         // Use defaults if fetch fails
       });
-  }, []);
 
-  const filteredMenuItems = menuItems.filter((item) => {
-    // Check if user role matches
-    if (!item.roles.includes(userRole)) return false;
-    
-    // If item requires super admin, check adminRole
-    if ((item as any).adminOnly && adminRole !== "SUPER_ADMIN") return false;
-    
-    return true;
-  });
+    // Auto-expand category containing current page
+    const currentCategory = menuCategories.find((category) =>
+      category.items.some((item) => pathname === item.href)
+    );
+    if (currentCategory && !expandedCategories.includes(currentCategory.title)) {
+      setExpandedCategories((prev) => [...prev, currentCategory.title]);
+    }
+  }, [pathname]);
+
+  const toggleCategory = (categoryTitle: string) => {
+    setExpandedCategories((prev) =>
+      prev.includes(categoryTitle)
+        ? prev.filter((title) => title !== categoryTitle)
+        : [...prev, categoryTitle]
+    );
+  };
+
+  const filterItems = (items: any[]) => {
+    return items.filter((item) => {
+      if (!item.roles.includes(userRole)) return false;
+      if ((item as any).adminOnly && adminRole !== "SUPER_ADMIN") return false;
+      return true;
+    });
+  };
+
+  const filteredCategories = menuCategories
+    .map((category) => ({
+      ...category,
+      items: filterItems(category.items),
+    }))
+    .filter((category) => category.items.length > 0);
 
   return (
     <>
@@ -188,17 +259,21 @@ export default function Sidebar() {
       >
         <div className="p-6 border-b flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img 
-              src={schoolLogo} 
-              alt="School Logo" 
+            <img
+              src={schoolLogo}
+              alt="School Logo"
               className="w-10 h-10 object-contain rounded"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = "/img/ECKINTOSH LOGO.png";
               }}
             />
             <div>
-              <h1 className="text-xl font-bold" style={{ color: primaryColor }}>{schoolName}</h1>
-              <p className="text-xs" style={{ color: secondaryColor }}>{schoolFullName}</p>
+              <h1 className="text-xl font-bold" style={{ color: primaryColor }}>
+                {schoolName}
+              </h1>
+              <p className="text-xs" style={{ color: secondaryColor }}>
+                {schoolFullName}
+              </p>
             </div>
           </div>
           {/* Close button for mobile */}
@@ -212,40 +287,69 @@ export default function Sidebar() {
         </div>
 
         <nav className="flex-1 overflow-y-auto p-4">
-          <ul className="space-y-2">
-            {filteredMenuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
+          <ul className="space-y-1">
+            {filteredCategories.map((category) => {
+              const isExpanded = expandedCategories.includes(category.title);
+              const isDashboard = category.title === "Dashboard";
 
               return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => {
-                      // Close sidebar on mobile after clicking a link
-                      if (window.innerWidth < 1024) {
-                        close();
-                      }
-                    }}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                      isActive
-                        ? "text-white"
-                        : "hover:bg-gray-100"
-                    }`}
-                    style={
-                      isActive
-                        ? {
-                            backgroundColor: primaryColor,
-                          }
-                        : {}
-                    }
-                  >
-                    <Icon 
-                      className="w-5 h-5" 
-                      style={{ color: isActive ? "white" : primaryColor }}
-                    />
-                    <span style={{ color: isActive ? "white" : secondaryColor }}>{item.title}</span>
-                  </Link>
+                <li key={category.title}>
+                  {!isDashboard && (
+                    <button
+                      onClick={() => toggleCategory(category.title)}
+                      className="flex items-center justify-between w-full px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        {category.icon && <category.icon className="w-4 h-4" />}
+                        <span>{category.title}</span>
+                      </div>
+                      {isExpanded ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
+                    </button>
+                  )}
+                  {(isDashboard || isExpanded) && (
+                    <ul className={`space-y-1 ${!isDashboard ? "ml-8 mt-1" : ""}`}>
+                      {category.items.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <li key={item.href}>
+                            <Link
+                              href={item.href}
+                              onClick={() => {
+                                if (window.innerWidth < 1024) {
+                                  close();
+                                }
+                              }}
+                              className={`flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors ${
+                                isActive ? "text-white" : "hover:bg-gray-100"
+                              }`}
+                              style={
+                                isActive
+                                  ? { backgroundColor: primaryColor }
+                                  : {}
+                              }
+                            >
+                              <Icon
+                                className="w-4 h-4"
+                                style={{ color: isActive ? "white" : primaryColor }}
+                              />
+                              <span
+                                className="text-sm"
+                                style={{ color: isActive ? "white" : secondaryColor }}
+                              >
+                                {item.title}
+                              </span>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
                 </li>
               );
             })}

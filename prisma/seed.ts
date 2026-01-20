@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
+  // Clear existing data to avoid conflicts
+  await prisma.admin.deleteMany({});
+
   // Create Super Admin
   const hashedAdminPassword = await bcrypt.hash("admin123", 10);
   const superAdmin = await prisma.admin.create({
@@ -35,24 +38,33 @@ async function main() {
 
   console.log("Admin created:", admin);
 
-  // Create Grades
+  // Create or update Grades
   const grades = await Promise.all([
-    prisma.grade.create({ data: { level: 1 } }),
-    prisma.grade.create({ data: { level: 2 } }),
-    prisma.grade.create({ data: { level: 3 } }),
-    prisma.grade.create({ data: { level: 4 } }),
-    prisma.grade.create({ data: { level: 5 } }),
+    prisma.grade.upsert({ where: { level: 1 }, update: {}, create: { level: 1 } }),
+    prisma.grade.upsert({ where: { level: 2 }, update: {}, create: { level: 2 } }),
+    prisma.grade.upsert({ where: { level: 3 }, update: {}, create: { level: 3 } }),
+    prisma.grade.upsert({ where: { level: 4 }, update: {}, create: { level: 4 } }),
+    prisma.grade.upsert({ where: { level: 5 }, update: {}, create: { level: 5 } }),
+    prisma.grade.upsert({ where: { level: 6 }, update: {}, create: { level: 6 } }),
+    prisma.grade.upsert({ where: { level: 7 }, update: {}, create: { level: 7 } }),
+    prisma.grade.upsert({ where: { level: 8 }, update: {}, create: { level: 8 } }),
+    prisma.grade.upsert({ where: { level: 9 }, update: {}, create: { level: 9 } }),
+    prisma.grade.upsert({ where: { level: 10 }, update: {}, create: { level: 10 } }),
+    prisma.grade.upsert({ where: { level: 11 }, update: {}, create: { level: 11 } }),
+    prisma.grade.upsert({ where: { level: 12 }, update: {}, create: { level: 12 } }),
+    prisma.grade.upsert({ where: { level: 13 }, update: {}, create: { level: 13 } }),
+    prisma.grade.upsert({ where: { level: 14 }, update: {}, create: { level: 14 } }),
   ]);
 
   console.log("Grades created");
 
-  // Create Subjects
+  // Create or update Subjects
   const subjects = await Promise.all([
-    prisma.subject.create({ data: { name: "Mathematics" } }),
-    prisma.subject.create({ data: { name: "Science" } }),
-    prisma.subject.create({ data: { name: "English" } }),
-    prisma.subject.create({ data: { name: "History" } }),
-    prisma.subject.create({ data: { name: "Geography" } }),
+    prisma.subject.upsert({ where: { name: "Mathematics" }, update: {}, create: { name: "Mathematics" } }),
+    prisma.subject.upsert({ where: { name: "Science" }, update: {}, create: { name: "Science" } }),
+    prisma.subject.upsert({ where: { name: "English" }, update: {}, create: { name: "English" } }),
+    prisma.subject.upsert({ where: { name: "History" }, update: {}, create: { name: "History" } }),
+    prisma.subject.upsert({ where: { name: "Geography" }, update: {}, create: { name: "Geography" } }),
   ]);
 
   console.log("Subjects created");

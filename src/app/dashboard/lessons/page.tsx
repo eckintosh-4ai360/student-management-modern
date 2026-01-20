@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { AddLessonButton } from "@/components/forms/AddLessonButton";
+import { EditLessonModal } from "@/components/forms/EditLessonModal";
 
 export default async function LessonsPage() {
   const [lessons, subjects, classes, teachers] = await Promise.all([
@@ -57,13 +58,19 @@ export default async function LessonsPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               {groupedByDay[day]?.map((lesson) => (
-                <div key={lesson.id} className="p-3 bg-gray-50 rounded-lg text-sm">
+                <div key={lesson.id} className="p-3 bg-gray-50 rounded-lg text-sm relative group">
                   <div className="font-semibold text-primary">{lesson.name}</div>
                   <div className="text-xs text-gray-600 mt-1">{lesson.subject.name}</div>
                   <div className="text-xs text-gray-600">{lesson.class.name}</div>
                   <div className="text-xs text-gray-500 mt-1">
                     {format(new Date(lesson.startTime), "HH:mm")} - {format(new Date(lesson.endTime), "HH:mm")}
                   </div>
+                  <EditLessonModal 
+                    data={lesson} 
+                    subjects={subjects} 
+                    classes={classes} 
+                    teachers={teachers} 
+                  />
                 </div>
               )) || (
                 <div className="text-sm text-gray-400 text-center py-4">No lessons</div>

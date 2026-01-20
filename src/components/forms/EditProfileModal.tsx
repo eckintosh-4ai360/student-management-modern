@@ -9,9 +9,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { updateUserProfile } from "@/lib/actions";
-import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Phone, Lock, Eye, EyeOff, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 type UserData = {
   id: string;
@@ -21,6 +22,7 @@ type UserData = {
   phone: string | null;
   username: string;
   userType: "STUDENT" | "TEACHER" | "PARENT" | "ADMIN";
+  img?: string | null;
 };
 
 type Props = {
@@ -42,7 +44,28 @@ export function EditProfileModal({ isOpen, onClose, userData }: Props) {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    userData.img || null,
+  );
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const router = useRouter();
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +95,11 @@ export function EditProfileModal({ isOpen, onClose, userData }: Props) {
       formData.append("surname", surname);
       formData.append("email", email);
       formData.append("phone", phone);
-      
+
+      if (imageFile) {
+        formData.append("profileImage", imageFile);
+      }
+
       if (currentPassword && newPassword) {
         formData.append("currentPassword", currentPassword);
         formData.append("newPassword", newPassword);
@@ -113,7 +140,55 @@ export function EditProfileModal({ isOpen, onClose, userData }: Props) {
             </div>
           )}
 
-          {/* Basic Information */}
+          {/* Profile Image Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+              Profile Picture
+            </h3>
+
+            <div className="flex flex-col items-center space-y-4">
+              <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white overflow-hidden shadow-lg">
+                {imagePreview ? (
+                  <Image
+                    src={imagePreview}
+                    alt={`${name} ${surname}`}
+                    width={128}
+                    height={128}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-4xl font-bold">
+                    {name?.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex gap-2">
+                <label className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer transition-colors">
+                  <Upload className="w-4 h-4" />
+                  Upload Photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </label>
+                {imagePreview && (
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Basic Information Section */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
               Basic Information
@@ -163,7 +238,9 @@ export function EditProfileModal({ isOpen, onClose, userData }: Props) {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                 disabled
               />
-              <p className="text-xs text-gray-500">Username cannot be changed</p>
+              <p className="text-xs text-gray-500">
+                Username cannot be changed
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -223,7 +300,11 @@ export function EditProfileModal({ isOpen, onClose, userData }: Props) {
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showCurrentPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -246,7 +327,11 @@ export function EditProfileModal({ isOpen, onClose, userData }: Props) {
                   onClick={() => setShowNewPassword(!showNewPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showNewPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -269,13 +354,18 @@ export function EditProfileModal({ isOpen, onClose, userData }: Props) {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
 
             <p className="text-xs text-gray-500">
-              Leave password fields empty if you don't want to change your password
+              Leave password fields empty if you don't want to change your
+              password
             </p>
           </div>
 
@@ -302,4 +392,3 @@ export function EditProfileModal({ isOpen, onClose, userData }: Props) {
     </Dialog>
   );
 }
-

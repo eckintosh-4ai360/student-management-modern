@@ -259,20 +259,20 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
               <div className="space-y-4">
                 <div>
                   <p className="text-xs text-gray-500">Parent/Guardian</p>
-                  <p className="font-medium text-lg">{student.parent.name} {student.parent.surname}</p>
+                  <p className="font-medium text-lg">{student.parent?.name || "No Parent"} {student.parent?.surname || ""}</p>
                 </div>
                 <div className="flex items-start">
                   <Mail className="w-4 h-4 mr-3 text-gray-400 mt-1" />
                   <div>
                     <p className="text-xs text-gray-500">Parent Email</p>
-                    <p className="font-medium">{student.parent.email || "Not provided"}</p>
+                    <p className="font-medium">{student.parent?.email || "Not provided"}</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <Phone className="w-4 h-4 mr-3 text-gray-400 mt-1" />
                   <div>
                     <p className="text-xs text-gray-500">Parent Phone</p>
-                    <p className="font-medium">{student.parent.phone}</p>
+                    <p className="font-medium">{student.parent?.phone || "Not provided"}</p>
                   </div>
                 </div>
               </div>

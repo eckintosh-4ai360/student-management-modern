@@ -27,6 +27,7 @@ export async function GET() {
           email: true,
           phone: true,
           username: true,
+          img: true,
         },
       });
       userData = student;
@@ -41,6 +42,7 @@ export async function GET() {
           email: true,
           phone: true,
           username: true,
+          img: true,
         },
       });
       userData = teacher;
@@ -65,6 +67,7 @@ export async function GET() {
         select: {
           id: true,
           username: true,
+          img: true,
         },
       });
       if (admin) {

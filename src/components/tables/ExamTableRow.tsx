@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { ViewExamModal } from "@/components/modals/ViewExamModal";
+import { EditExamModal } from "@/components/forms/EditExamModal";
+import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
+import { deleteExam } from "@/lib/actions";
+import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { Eye } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 
 interface Exam {
   id: number;
@@ -12,6 +16,7 @@ interface Exam {
   startTime: Date;
   endTime: Date;
   lesson: {
+    id: number;
     name: string;
     subject: {
       name: string;
@@ -20,6 +25,7 @@ interface Exam {
       name: string;
     };
     teacher: {
+      id: string; // Added ID for permission check
       name: string;
       surname: string;
     };
@@ -31,10 +37,28 @@ interface Exam {
 
 interface ExamTableRowProps {
   exam: Exam;
+  role: string;
+  userId: string;
+  lessons: { id: number; name: string }[];
 }
 
-export function ExamTableRow({ exam }: ExamTableRowProps) {
+export function ExamTableRow({ exam, role, userId, lessons }: ExamTableRowProps) {
   const [viewOpen, setViewOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const canEdit = role === "admin" || (role === "teacher" && userId === exam.lesson.teacher.id);
+
+  const handleDelete = () => {
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.append("id", exam.id.toString());
+      await deleteExam({ success: false, error: false }, formData);
+      setDeleteOpen(false);
+      router.refresh();
+    });
+  };
 
   return (
     <>
@@ -62,6 +86,28 @@ export function ExamTableRow({ exam }: ExamTableRowProps) {
             <Eye className="w-3 h-3" />
             View
           </Button>
+
+          {canEdit && (
+             <>
+             <EditExamModal data={{
+                id: exam.id,
+                title: exam.title,
+                startTime: exam.startTime,
+                endTime: exam.endTime,
+                lessonId: exam.lesson.id || 0, // Should exist
+             }} lessons={lessons} />
+             
+             <Button 
+                variant="destructive" 
+                size="sm" 
+                onClick={() => setDeleteOpen(true)}
+                className="flex items-center gap-1 ml-2"
+              >
+                <Trash2 className="w-3 h-3" />
+                Delete
+              </Button>
+             </>
+          )}
         </td>
       </tr>
 
@@ -69,6 +115,15 @@ export function ExamTableRow({ exam }: ExamTableRowProps) {
         open={viewOpen}
         onOpenChange={setViewOpen}
         exam={exam}
+      />
+      
+      <DeleteConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onConfirm={handleDelete}
+        title="Delete Exam"
+        description={`Are you sure you want to delete ${exam.title}? This action cannot be undone.`}
+        isDeleting={isPending}
       />
     </>
   );

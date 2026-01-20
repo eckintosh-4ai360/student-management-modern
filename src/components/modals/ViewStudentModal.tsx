@@ -20,7 +20,7 @@ interface Student {
   img?: string | null;
   class: { name: string };
   grade: { level: number };
-  parent: { name: string; surname: string; phone: string };
+  parent: { name: string; surname: string; phone: string } | null;
 }
 
 interface ViewStudentModalProps {
@@ -131,11 +131,11 @@ export function ViewStudentModal({ open, onOpenChange, student }: ViewStudentMod
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-500">Parent Name</p>
-                <p className="font-medium">{student.parent.name} {student.parent.surname}</p>
+                <p className="font-medium">{student.parent?.name || "No Parent"} {student.parent?.surname || ""}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Parent Phone</p>
-                <p className="font-medium">{student.parent.phone}</p>
+                <p className="font-medium">{student.parent?.phone || "N/A"}</p>
               </div>
             </div>
           </div>

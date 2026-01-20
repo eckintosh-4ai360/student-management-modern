@@ -21,7 +21,7 @@ export default async function SettingsPage() {
     settings = await prisma.systemSettings.create({
       data: {
         schoolName: "Student Management System",
-        schoolShortName: "SMS",
+        schoolShortName: "ECKINTSOH",
       },
     });
   }

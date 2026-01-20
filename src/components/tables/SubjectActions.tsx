@@ -6,15 +6,18 @@ import { Button } from "@/components/ui/button";
 import { deleteSubject } from "@/lib/actions";
 import { Trash2 } from "lucide-react";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
+import { EditSubjectModal } from "@/components/forms/EditSubjectModal";
 
 interface SubjectActionsProps {
   subject: {
     id: number;
     name: string;
+    teachers: { id: string; name: string; surname: string }[];
   };
+  teachers: { id: string; name: string; surname: string }[];
 }
 
-export function SubjectActions({ subject }: SubjectActionsProps) {
+export function SubjectActions({ subject, teachers }: SubjectActionsProps) {
   const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -30,7 +33,9 @@ export function SubjectActions({ subject }: SubjectActionsProps) {
   };
 
   return (
-    <>
+    <div className="flex items-center gap-2">
+      <EditSubjectModal data={subject} teachers={teachers} />
+      
       <Button 
         variant="destructive" 
         size="sm" 
@@ -49,7 +54,6 @@ export function SubjectActions({ subject }: SubjectActionsProps) {
         description={`Are you sure you want to delete ${subject.name}? This action cannot be undone.`}
         isDeleting={isPending}
       />
-    </>
+    </div>
   );
 }
-

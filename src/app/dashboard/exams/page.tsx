@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { AddExamButton } from "@/components/forms/AddExamButton";
 import { ExamTableRow } from "@/components/tables/ExamTableRow";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export default async function ExamsPage() {
   const [exams, lessons] = await Promise.all([
@@ -29,9 +31,13 @@ export default async function ExamsPage() {
         subject: true,
         class: true,
       },
-      orderBy: { name: "asc" },
     }),
   ]);
+
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
+  const role = (user as any)?.role || "student";
+  const userId = (user as any)?.id || "";
 
   return (
     <div className="space-y-6">
@@ -63,7 +69,13 @@ export default async function ExamsPage() {
               </thead>
               <tbody>
                 {exams.map((exam) => (
-                  <ExamTableRow key={exam.id} exam={exam} />
+                  <ExamTableRow 
+                    key={exam.id} 
+                    exam={exam as any} 
+                    role={role} 
+                    userId={userId} 
+                    lessons={lessons} 
+                  />
                 ))}
               </tbody>
             </table>

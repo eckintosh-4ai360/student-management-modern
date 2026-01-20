@@ -212,7 +212,7 @@ export default async function FeesPage({
                     </td>
                     {userRole !== "student" && (
                       <td className="p-4 text-sm">
-                        {fee.student.parent.name} {fee.student.parent.surname}
+                        {fee.student.parent?.name || "No Parent"} {fee.student.parent?.surname || ""}
                       </td>
                     )}
                     {userRole === "admin" && (

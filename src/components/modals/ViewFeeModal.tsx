@@ -16,7 +16,7 @@ interface Fee {
     name: string;
     surname: string;
     class: { name: string };
-    parent: { name: string; surname: string; phone: string };
+    parent: { name: string; surname: string; phone: string } | null;
   };
 }
 
@@ -93,11 +93,11 @@ export function ViewFeeModal({ open, onOpenChange, fee }: ViewFeeModalProps) {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Parent/Guardian</p>
-                <p className="font-medium">{fee.student.parent.name} {fee.student.parent.surname}</p>
+                <p className="font-medium">{fee.student.parent?.name || "No Parent"} {fee.student.parent?.surname || ""}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Parent Phone</p>
-                <p className="font-medium">{fee.student.parent.phone}</p>
+                <p className="font-medium">{fee.student.parent?.phone || "N/A"}</p>
               </div>
             </div>
           </div>

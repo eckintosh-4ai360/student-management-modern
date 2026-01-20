@@ -80,7 +80,7 @@ export default async function SubjectsPage({
                 )}
               </div>
               <div className="pt-3">
-                <SubjectActions subject={subject} />
+                <SubjectActions subject={subject} teachers={teachers} />
               </div>
             </CardContent>
           </Card>

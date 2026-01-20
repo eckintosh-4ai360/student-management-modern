@@ -10,6 +10,24 @@ import { Select } from "@/components/ui/select";
 import { createClass } from "@/lib/actions";
 import { classSchema } from "@/lib/formValidationSchemas";
 
+const gradeNames: Record<number, string> = {
+  1: "CRECHE",
+  2: "NURSERY 1",
+  3: "NURSERY 2",
+  4: "KG 1",
+  5: "KG 2",
+  6: "Basic 1",
+  7: "Basic 2",
+  8: "Basic 3",
+  9: "Basic 4",
+  10: "Basic 5",
+  11: "Basic 6",
+  12: "JHS 1",
+  13: "JHS 2",
+  14: "JHS 3",
+
+};
+
 interface AddClassModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -93,7 +111,7 @@ export function AddClassModal({ open, onOpenChange, grades, teachers }: AddClass
                 <option value="">Select Grade</option>
                 {grades.map((grade) => (
                   <option key={grade.id} value={grade.id}>
-                    Grade {grade.level}
+                    {gradeNames[grade.level] || `Grade ${grade.level}`}
                   </option>
                 ))}
               </Select>

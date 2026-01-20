@@ -25,7 +25,7 @@ interface Student {
   img?: string | null;
   class: { id: number; name: string };
   grade: { id: number; level: number };
-  parent: { id: string; name: string; surname: string; phone: string };
+  parent: { id: string; name: string; surname: string; phone: string } | null;
 }
 
 interface StudentTableRowProps {
@@ -83,7 +83,7 @@ export function StudentTableRow({ student, grades, classes, parents }: StudentTa
         <td className="p-4 text-sm text-gray-600">{student.id.slice(0, 8)}</td>
         <td className="p-4 text-sm">{student.class.name}</td>
         <td className="p-4 text-sm">Grade {student.grade.level}</td>
-        <td className="p-4 text-sm">{student.parent.name} {student.parent.surname}</td>
+        <td className="p-4 text-sm">{student.parent?.name} {student.parent?.surname}</td>
         <td className="p-4 text-sm">{student.email || student.phone || "-"}</td>
         <td className="p-4">
           <div className="flex items-center gap-2">
