@@ -15,7 +15,7 @@ interface Fee {
     name: string;
     surname: string;
     class: { name: string };
-    parent: { name: string; surname: string; phone: string };
+    parent: { name: string; surname: string; phone: string } | null;
   };
 }
 
