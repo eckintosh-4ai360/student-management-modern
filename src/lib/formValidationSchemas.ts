@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const subjectSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.number().optional(),
   name: z.string().min(1, { message: "Subject name is required!" }),
   teachers: z.array(z.string()),
 });
@@ -40,7 +40,7 @@ export const teacherSchema = z.object({
   address: z.string(),
   img: z.string().optional(),
   bloodType: z.string().min(1, { message: "Blood Type is required!" }),
-  birthday: z.coerce.date({ message: "Birthday is required!" }),
+  birthday: z.date({ message: "Birthday is required!" }),
   sex: z.enum(["MALE", "FEMALE"], { message: "Sex is required!" }),
   subjects: z.array(z.string()).optional(),
 });
@@ -69,21 +69,21 @@ export const studentSchema = z.object({
   address: z.string(),
   img: z.string().optional(),
   bloodType: z.string().min(1, { message: "Blood Type is required!" }),
-  birthday: z.coerce.date({ message: "Birthday is required!" }),
+  birthday: z.date({ message: "Birthday is required!" }),
   sex: z.enum(["MALE", "FEMALE"], { message: "Sex is required!" }),
-  gradeId: z.coerce.number().min(1, { message: "Grade is required!" }),
-  classId: z.coerce.number().min(1, { message: "Class is required!" }),
+  gradeId: z.number().min(1, { message: "Grade is required!" }),
+  classId: z.number().min(1, { message: "Class is required!" }),
   parentId: z.string().min(1, { message: "Parent Id is required!" }),
 });
 
 export type StudentSchema = z.infer<typeof studentSchema>;
 
 export const examSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.number().optional(),
   title: z.string().min(1, { message: "Title is required!" }),
-  startTime: z.coerce.date({ message: "Start time is required!" }),
-  endTime: z.coerce.date({ message: "End time is required!" }),
-  lessonId: z.coerce.number({ message: "Lesson is required!" }),
+  startTime: z.date({ message: "Start time is required!" }),
+  endTime: z.date({ message: "End time is required!" }),
+  lessonId: z.number({ message: "Lesson is required!" }),
 });
 
 export type ExamSchema = z.infer<typeof examSchema>;
@@ -113,76 +113,76 @@ export const parentSchema = z.object({
 export type ParentSchema = z.infer<typeof parentSchema>;
 
 export const lessonSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.number().optional(),
   name: z.string().min(1, { message: "Lesson name is required!" }),
   day: z.enum(["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"], {
     message: "Day is required!",
   }),
-  startTime: z.coerce.date({ message: "Start time is required!" }),
-  endTime: z.coerce.date({ message: "End time is required!" }),
-  subjectId: z.coerce.number({ message: "Subject is required!" }),
-  classId: z.coerce.number({ message: "Class is required!" }),
+  startTime: z.date({ message: "Start time is required!" }),
+  endTime: z.date({ message: "End time is required!" }),
+  subjectId: z.number({ message: "Subject is required!" }),
+  classId: z.number({ message: "Class is required!" }),
   teacherId: z.string().min(1, { message: "Teacher is required!" }),
 });
 
 export type LessonSchema = z.infer<typeof lessonSchema>;
 
 export const assignmentSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.number().optional(),
   title: z.string().min(1, { message: "Title is required!" }),
-  startDate: z.coerce.date({ message: "Start date is required!" }),
-  dueDate: z.coerce.date({ message: "Due date is required!" }),
-  lessonId: z.coerce.number({ message: "Lesson is required!" }),
+  startDate: z.date({ message: "Start date is required!" }),
+  dueDate: z.date({ message: "Due date is required!" }),
+  lessonId: z.number({ message: "Lesson is required!" }),
 });
 
 export type AssignmentSchema = z.infer<typeof assignmentSchema>;
 
 export const resultSchema = z.object({
-  id: z.coerce.number().optional(),
-  score: z.coerce.number().min(0).max(100, { message: "Score must be between 0 and 100!" }),
-  examId: z.coerce.number().optional(),
-  assignmentId: z.coerce.number().optional(),
+  id: z.number().optional(),
+  score: z.number().min(0).max(100, { message: "Score must be between 0 and 100!" }),
+  examId: z.number().optional(),
+  assignmentId: z.number().optional(),
   studentId: z.string().min(1, { message: "Student is required!" }),
 });
 
 export type ResultSchema = z.infer<typeof resultSchema>;
 
 export const attendanceSchema = z.object({
-  id: z.coerce.number().optional(),
-  date: z.coerce.date({ message: "Date is required!" }),
+  id: z.number().optional(),
+  date: z.date({ message: "Date is required!" }),
   present: z.boolean(),
   studentId: z.string().min(1, { message: "Student is required!" }),
-  lessonId: z.coerce.number({ message: "Lesson is required!" }),
+  lessonId: z.number({ message: "Lesson is required!" }),
 });
 
 export type AttendanceSchema = z.infer<typeof attendanceSchema>;
 
 export const eventSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.number().optional(),
   title: z.string().min(1, { message: "Title is required!" }),
   description: z.string().min(1, { message: "Description is required!" }),
-  startTime: z.coerce.date({ message: "Start time is required!" }),
-  endTime: z.coerce.date({ message: "End time is required!" }),
-  classId: z.coerce.number().optional(),
+  startTime: z.date({ message: "Start time is required!" }),
+  endTime: z.date({ message: "End time is required!" }),
+  classId: z.number().optional(),
 });
 
 export type EventSchema = z.infer<typeof eventSchema>;
 
 export const announcementSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.number().optional(),
   title: z.string().min(1, { message: "Title is required!" }),
   description: z.string().min(1, { message: "Description is required!" }),
-  date: z.coerce.date({ message: "Date is required!" }),
-  classId: z.coerce.number().optional(),
+  date: z.date({ message: "Date is required!" }),
+  classId: z.number().optional(),
 });
 
 export type AnnouncementSchema = z.infer<typeof announcementSchema>;
 
 export const feeSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.number().optional(),
   title: z.string().min(1, { message: "Title is required!" }),
-  amount: z.coerce.number().min(0, { message: "Amount must be positive!" }),
-  dueDate: z.coerce.date({ message: "Due date is required!" }),
+  amount: z.number().min(0, { message: "Amount must be positive!" }),
+  dueDate: z.date({ message: "Due date is required!" }),
   status: z.enum(["PENDING", "PAID", "OVERDUE"], { message: "Status is required!" }),
   description: z.string().optional(),
   studentId: z.string().min(1, { message: "Student is required!" }),
