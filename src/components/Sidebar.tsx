@@ -107,7 +107,7 @@ const menuCategories = [
     ],
   },
   {
-    title: "Attendance & Discipline",
+    title: "Attendance & Behavior",
     icon: Calendar,
     items: [
       {
@@ -311,7 +311,7 @@ export default function Sidebar() {
                     </button>
                   )}
                   {(isDashboard || isExpanded) && (
-                    <ul className={`space-y-1 ${!isDashboard ? "ml-8 mt-1" : ""}`}>
+                    <ul className="space-y-1">
                       {category.items.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href;

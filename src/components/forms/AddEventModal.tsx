@@ -71,7 +71,7 @@ export function AddEventModal({ open, onOpenChange, classes }: AddEventModalProp
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="w-full max-w-2xl">
         <DialogHeader>
           <DialogTitle>New Event</DialogTitle>
           <DialogDescription>Create a new school event</DialogDescription>

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
@@ -15,14 +15,24 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: settings.schoolName,
     description: `${settings.schoolName} - Modern student management system with comprehensive features`,
-    viewport: "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
-    themeColor: settings.primaryColor,
     manifest: "/manifest.json",
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
       title: settings.schoolShortName,
     },
+  };
+}
+
+export async function generateViewport(): Promise<Viewport> {
+  const settings = await getSystemSettings();
+  
+  return {
+    width: "device-width",
+     initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+    themeColor: settings.primaryColor,
   };
 }
 

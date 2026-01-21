@@ -1317,6 +1317,83 @@ export const deleteAdmin = async (
   }
 };
 
+// BEHAVIOR ACTIONS
+export const createBehavior = async (
+  currentState: ActionState,
+  data: any
+): Promise<ActionState> => {
+  try {
+    await prisma.behavior.create({
+      data: {
+        studentId: data.studentId,
+        title: data.title,
+        description: data.description,
+        type: data.type,
+        severity: data.severity,
+        date: new Date(data.date),
+        reportedBy: data.reportedBy,
+        actionTaken: data.actionTaken || null,
+      },
+    });
+
+    revalidatePath("/dashboard/behavior");
+    return { success: true, error: false, message: "Behavior record created successfully!" };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: true, message: "Failed to create behavior record!" };
+  }
+};
+
+export const updateBehavior = async (
+  currentState: ActionState,
+  data: any
+): Promise<ActionState> => {
+  if (!data.id) {
+    return { success: false, error: true, message: "Behavior ID is required!" };
+  }
+
+  try {
+    await prisma.behavior.update({
+      where: { id: data.id },
+      data: {
+        studentId: data.studentId,
+        title: data.title,
+        description: data.description,
+        type: data.type,
+        severity: data.severity,
+        date: new Date(data.date),
+        reportedBy: data.reportedBy,
+        actionTaken: data.actionTaken || null,
+      },
+    });
+
+    revalidatePath("/dashboard/behavior");
+    return { success: true, error: false, message: "Behavior record updated successfully!" };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: true, message: "Failed to update behavior record!" };
+  }
+};
+
+export const deleteBehavior = async (
+  currentState: ActionState,
+  data: FormData
+): Promise<ActionState> => {
+  const id = data.get("id") as string;
+
+  try {
+    await prisma.behavior.delete({
+      where: { id: parseInt(id) },
+    });
+
+    revalidatePath("/dashboard/behavior");
+    return { success: true, error: false, message: "Behavior record archived successfully!" };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: true, message: "Failed to archive behavior record!" };
+  }
+};
+
 // SYSTEM SETTINGS ACTIONS
 export const updateSystemSettings = async (
   data: FormData
