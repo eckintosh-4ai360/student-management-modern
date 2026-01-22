@@ -193,6 +193,7 @@ export default function Sidebar() {
   const [primaryColor, setPrimaryColor] = useState("#3b82f6");
   const [secondaryColor, setSecondaryColor] = useState("#8b5cf6");
   const [expandedCategories, setExpandedCategories] = useState<string[]>(["Dashboard"]);
+  const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
     // Fetch school settings for branding
@@ -209,6 +210,36 @@ export default function Sidebar() {
         // Use defaults if fetch fails
       });
 
+    // Profile update listener
+    const fetchUserProfile = () => {
+      fetch("/api/user/profile")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && !data.error) {
+            setUserData(data);
+          }
+        })
+        .catch(() => {});
+    };
+
+    fetchUserProfile();
+    window.addEventListener("profile-updated", fetchUserProfile);
+
+    // Event listener for real-time updates
+    const handleSettingsUpdate = () => {
+      fetch("/api/settings")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.schoolShortName) setSchoolName(data.schoolShortName);
+          if (data.schoolName) setSchoolFullName(data.schoolName);
+          if (data.schoolLogo) setSchoolLogo(data.schoolLogo);
+          if (data.primaryColor) setPrimaryColor(data.primaryColor);
+          if (data.secondaryColor) setSecondaryColor(data.secondaryColor);
+        });
+    };
+
+    window.addEventListener("settings-updated", handleSettingsUpdate);
+
     // Auto-expand category containing current page
     const currentCategory = menuCategories.find((category) =>
       category.items.some((item) => pathname === item.href)
@@ -216,6 +247,10 @@ export default function Sidebar() {
     if (currentCategory && !expandedCategories.includes(currentCategory.title)) {
       setExpandedCategories((prev) => [...prev, currentCategory.title]);
     }
+
+    return () => {
+      window.removeEventListener("settings-updated", handleSettingsUpdate);
+    };
   }, [pathname]);
 
   const toggleCategory = (categoryTitle: string) => {
@@ -358,7 +393,9 @@ export default function Sidebar() {
 
         <div className="p-4 border-t">
           <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium">{session?.user?.name}</p>
+            <p className="text-sm font-medium">
+              {userData ? (userRole === "admin" ? userData.name : `${userData.name} ${userData.surname}`) : (session?.user?.name)}
+            </p>
             <p className="text-xs text-gray-500 capitalize">{userRole}</p>
           </div>
           <Button

@@ -67,16 +67,16 @@ export async function GET() {
         select: {
           id: true,
           username: true,
+          name: true,
+          email: true,
+          phone: true,
           img: true,
         },
       });
       if (admin) {
         userData = {
           ...admin,
-          name: "Admin",
-          surname: "User",
-          email: null,
-          phone: null,
+          surname: "", // Admin only has 'name' in schema
         };
       }
       userType = "ADMIN";

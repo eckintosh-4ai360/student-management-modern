@@ -54,6 +54,9 @@ export default function Navbar() {
 
     if (session) {
       fetchUserData();
+      
+      window.addEventListener("profile-updated", fetchUserData);
+      return () => window.removeEventListener("profile-updated", fetchUserData);
     }
   }, [session]);
 
@@ -144,7 +147,7 @@ export default function Navbar() {
             </div>
             <div className="hidden md:block text-left">
               <p className="text-sm font-semibold text-gray-900">
-                {session?.user?.name}
+                {userData ? (userData.userType === "ADMIN" ? userData.name : `${userData.name} ${userData.surname}`) : session?.user?.name}
               </p>
               <p className="text-xs text-gray-500 capitalize">
                 {(session?.user as any)?.role || "User"}
@@ -176,7 +179,7 @@ export default function Navbar() {
               <button
                 onClick={() => {
                   setShowUserMenu(false);
-                  router.push("/dashboard");
+                  router.push("/dashboard/settings");
                 }}
                 className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center"
               >

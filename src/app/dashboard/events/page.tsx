@@ -1,9 +1,9 @@
 import prisma from "@/lib/prisma";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus, Calendar, Clock } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Calendar, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { AddEventButton } from "@/components/forms/AddEventButton";
+import { EventCardActions } from "@/components/events/EventCardActions";
 
 export default async function EventsPage() {
   const [events, classes] = await Promise.all([
@@ -28,7 +28,7 @@ export default async function EventsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Events</h1>
-          <p className="text-gray-500 mt-1">View all school events</p>
+          <p className="text-gray-500 mt-1">View and manage school events</p>
         </div>
         <AddEventButton classes={classes} />
       </div>
@@ -36,29 +36,31 @@ export default async function EventsPage() {
       {upcomingEvents.length > 0 && (
         <div>
           <h2 className="text-2xl font-semibold mb-4">Upcoming Events</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {upcomingEvents.map((event) => (
-              <Card key={event.id} className="border-l-4 border-l-green-500">
+              <Card key={event.id} className="border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-2">{event.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3">{event.description}</p>
-                  <div className="space-y-1 text-sm text-gray-500">
+                  <p className="text-gray-600 text-sm mb-4 min-h-[3rem]">{event.description}</p>
+                  <div className="space-y-2 text-sm text-gray-500">
                     <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2" />
+                      <Calendar className="w-4 h-4 mr-2 text-blue-500" />
                       {format(new Date(event.startTime), "MMMM dd, yyyy")}
                     </div>
                     <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-2" />
+                      <Clock className="w-4 h-4 mr-2 text-blue-500" />
                       {format(new Date(event.startTime), "HH:mm")} - {format(new Date(event.endTime), "HH:mm")}
                     </div>
                     {event.class && (
                       <div className="mt-2">
-                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                        <span className="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full border border-blue-100 font-medium">
                           {event.class.name}
                         </span>
                       </div>
                     )}
                   </div>
+                  
+                  <EventCardActions event={event} classes={classes} />
                 </CardContent>
               </Card>
             ))}
@@ -68,14 +70,14 @@ export default async function EventsPage() {
 
       {pastEvents.length > 0 && (
         <div>
-          <h2 className="text-2xl font-semibold mb-4">Past Events</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-500">Past Events</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pastEvents.map((event) => (
-              <Card key={event.id} className="opacity-75">
+              <Card key={event.id} className="opacity-75 grayscale-[0.5]">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-2">{event.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3">{event.description}</p>
-                  <div className="space-y-1 text-sm text-gray-500">
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{event.description}</p>
+                  <div className="space-y-2 text-sm text-gray-500">
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-2" />
                       {format(new Date(event.startTime), "MMMM dd, yyyy")}
@@ -88,6 +90,8 @@ export default async function EventsPage() {
                       </div>
                     )}
                   </div>
+
+                  <EventCardActions event={event} classes={classes} />
                 </CardContent>
               </Card>
             ))}
@@ -97,4 +101,5 @@ export default async function EventsPage() {
     </div>
   );
 }
+
 

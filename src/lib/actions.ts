@@ -847,6 +847,11 @@ export const updateUserProfile = async (
       phone: phone || null,
     };
 
+    // Admin doesn't have surname in schema
+    if (userType === "ADMIN") {
+      delete updateData.surname;
+    }
+
     // Handle image upload if provided
     if (profileImage) {
       try {
@@ -1208,7 +1213,6 @@ export const deleteEvent = async (
   data: FormData
 ): Promise<ActionState> => {
   const id = data.get("id") as string;
-
   try {
     await prisma.event.delete({
       where: { id: parseInt(id) },
@@ -1244,6 +1248,38 @@ export const createAdmin = async (
     
     const staffId = `STAFF-ADM-${String(nextNumber).padStart(3, "0")}`;
 
+    let imagePath = data.img || null;
+
+    // Handle base64 image upload if provided
+    if (data.img && data.img.startsWith("data:image/")) {
+      try {
+        const base64Data = data.img.split(",")[1];
+        const buffer = Buffer.from(base64Data, "base64");
+        
+        // Extract extension from data URL
+        const mimeType = data.img.split(";")[0].split(":")[1];
+        const extension = mimeType.split("/")[1];
+        
+        // Create unique filename using username
+        const filename = `admin-${data.username}-${Date.now()}.${extension}`;
+        const uploadDir = path.join(process.cwd(), "public/uploads");
+        
+        // Ensure upload directory exists
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        
+        const filepath = path.join(uploadDir, filename);
+        fs.writeFileSync(filepath, buffer);
+        
+        // Store relative path in database
+        imagePath = `/uploads/${filename}`;
+      } catch (imageError) {
+        console.error("Admin image upload error:", imageError);
+        // We can continue without the image rather than failing the whole creation
+      }
+    }
+
     await prisma.admin.create({
       data: {
         username: data.username,
@@ -1251,7 +1287,7 @@ export const createAdmin = async (
         password: hashedPassword,
         name: data.name,
         email: data.email || null,
-        img: data.img || null,
+        img: imagePath,
         role: data.role,
       },
     });
@@ -1273,11 +1309,43 @@ export const updateAdmin = async (
   }
 
   try {
+    let imagePath = data.img || null;
+
+    // Handle base64 image upload if provided
+    if (data.img && data.img.startsWith("data:image/")) {
+      try {
+        const base64Data = data.img.split(",")[1];
+        const buffer = Buffer.from(base64Data, "base64");
+        
+        // Extract extension from data URL
+        const mimeType = data.img.split(";")[0].split(":")[1];
+        const extension = mimeType.split("/")[1];
+        
+        // Create unique filename
+        const filename = `admin-${data.id}-${Date.now()}.${extension}`;
+        const uploadDir = path.join(process.cwd(), "public/uploads");
+        
+        // Ensure upload directory exists
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        
+        const filepath = path.join(uploadDir, filename);
+        fs.writeFileSync(filepath, buffer);
+        
+        // Store relative path in database
+        imagePath = `/uploads/${filename}`;
+      } catch (imageError) {
+        console.error("Admin image upload error:", imageError);
+        return { success: false, error: true, message: "Failed to upload image" };
+      }
+    }
+
     const updateData: any = {
       username: data.username,
       name: data.name,
       email: data.email || null,
-      img: data.img || null,
+      img: imagePath,
       role: data.role,
     };
 
@@ -1401,29 +1469,39 @@ export const updateSystemSettings = async (
   const id = data.get("id") as string;
 
   try {
-    const updateData: any = {
-      schoolName: data.get("schoolName") as string,
-      schoolShortName: data.get("schoolShortName") as string,
-      schoolLogo: data.get("schoolLogo") as string || null,
-      schoolEmail: data.get("schoolEmail") as string || null,
-      schoolPhone: data.get("schoolPhone") as string || null,
-      schoolAddress: data.get("schoolAddress") as string || null,
-      schoolWebsite: data.get("schoolWebsite") as string || null,
-      primaryColor: data.get("primaryColor") as string,
-      secondaryColor: data.get("secondaryColor") as string,
-      accentColor: data.get("accentColor") as string,
-      emailHost: data.get("emailHost") as string || null,
-      emailPort: data.get("emailPort") ? parseInt(data.get("emailPort") as string) : null,
-      emailUser: data.get("emailUser") as string || null,
-      smsApiKey: data.get("smsApiKey") as string || null,
-      smsSenderId: data.get("smsSenderId") as string || null,
-      academicYear: data.get("academicYear") as string,
-      currency: data.get("currency") as string,
-      timezone: data.get("timezone") as string,
-      dateFormat: data.get("dateFormat") as string,
-    };
+    const updateData: any = {};
+    
+    const fields = [
+      "schoolName", "schoolShortName", "schoolLogo", "schoolEmail", "schoolPhone",
+      "schoolAddress", "schoolWebsite", "primaryColor", "secondaryColor", "accentColor",
+      "emailHost", "emailUser", "smsApiKey", "smsSenderId", "academicYear",
+      "currency", "timezone", "dateFormat", "currentTerm", "studentIdInitials"
+    ];
 
-    // Only update password if provided
+    fields.forEach(field => {
+      const value = data.get(field);
+      if (value !== null) {
+        updateData[field] = value as string || null;
+      }
+    });
+
+    if (data.get("emailPort")) {
+      updateData.emailPort = parseInt(data.get("emailPort") as string);
+    }
+
+    if (data.get("totalAttendanceDays")) {
+      updateData.totalAttendanceDays = parseInt(data.get("totalAttendanceDays") as string);
+    }
+
+    if (data.get("vacationDate")) {
+      updateData.vacationDate = new Date(data.get("vacationDate") as string);
+    }
+
+    if (data.get("reopeningDate")) {
+      updateData.reopeningDate = new Date(data.get("reopeningDate") as string);
+    }
+
+    // Only update sensitive fields if provided
     const emailPassword = data.get("emailPassword") as string;
     if (emailPassword && emailPassword !== "") {
       updateData.emailPassword = emailPassword;
@@ -1443,9 +1521,19 @@ export const updateSystemSettings = async (
     const { clearSettingsCache } = await import("./settings");
     clearSettingsCache();
 
+    // Revalidate all pages that use system settings
     revalidatePath("/dashboard/settings");
     revalidatePath("/dashboard");
     revalidatePath("/login");
+    revalidatePath("/");
+    // Revalidate all dashboard subpages
+    revalidatePath("/dashboard/students");
+    revalidatePath("/dashboard/teachers");
+    revalidatePath("/dashboard/parents");
+    revalidatePath("/dashboard/classes");
+    revalidatePath("/dashboard/attendance");
+    revalidatePath("/dashboard/fees");
+    
     return { success: true, error: false, message: "Settings updated successfully!" };
   } catch (err) {
     console.error(err);

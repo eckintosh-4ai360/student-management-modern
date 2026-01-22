@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import { getSystemSettings } from "@/lib/settings";
 import EnrollmentChart from "@/components/EnrollmentChart";
+import { RefreshButton } from "@/components/RefreshButton";
 
 export default async function DashboardPage() {
   let session;
@@ -173,14 +174,11 @@ export default async function DashboardPage() {
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full flex items-center text-xs sm:text-sm">
                   <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                  <span className="whitespace-nowrap">Academic Year 2024-2025</span>
+                  <span className="whitespace-nowrap">Academic Year {systemSettings.academicYear}</span>
                 </div>
               </div>
             </div>
-            <Button className="hidden sm:flex bg-white text-blue-600 hover:bg-blue-50 px-4 sm:px-6 py-4 sm:py-6 text-sm sm:text-base md:text-lg">
-              <Activity className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              Refresh
-            </Button>
+            <RefreshButton />
           </div>
         </div>
 
@@ -532,10 +530,14 @@ export default async function DashboardPage() {
           <p className="text-blue-100 text-sm sm:text-base md:text-lg mb-3 sm:mb-4">
             Grade {studentData.grade.level} • {studentData.class.name}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full flex items-center text-xs sm:text-sm">
               <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
               <span className="whitespace-nowrap">{format(new Date(), "MMM dd, yyyy")}</span>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full flex items-center text-xs sm:text-sm">
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+              <span className="whitespace-nowrap">Academic Year {systemSettings.academicYear}</span>
             </div>
           </div>
         </div>

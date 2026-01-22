@@ -1,18 +1,6 @@
 import prisma from "./prisma";
 
-// Cache for settings to avoid frequent database calls
-let settingsCache: any = null;
-let lastFetch = 0;
-const CACHE_DURATION = 60000; // 1 minute
-
 export async function getSystemSettings() {
-  const now = Date.now();
-  
-  // Return cached settings if still valid
-  if (settingsCache && (now - lastFetch) < CACHE_DURATION) {
-    return settingsCache;
-  }
-
   // Fetch fresh settings
   let settings = await prisma.systemSettings.findFirst();
 
@@ -29,17 +17,12 @@ export async function getSystemSettings() {
     });
   }
 
-  // Update cache
-  settingsCache = settings;
-  lastFetch = now;
-
   return settings;
 }
 
-// Clear cache when settings are updated
+// Clear cache when settings are updated (no-op now)
 export function clearSettingsCache() {
-  settingsCache = null;
-  lastFetch = 0;
+  // Manual cache removed for better real-time reflection
 }
 
 // Generate CSS variables from settings

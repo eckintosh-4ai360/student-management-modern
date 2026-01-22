@@ -2,9 +2,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { SettingsForm } from "@/components/forms/SettingsForm";
+
+
 import { Settings as SettingsIcon } from "lucide-react";
+import { SettingsPageClient } from "@/components/settings/SettingsPageClient";
 
 export default async function SettingsPage() {
   // Check if user is super admin
@@ -21,10 +22,49 @@ export default async function SettingsPage() {
     settings = await prisma.systemSettings.create({
       data: {
         schoolName: "Student Management System",
-        schoolShortName: "ECKINTSOH",
+        schoolShortName: "ECKINTOSH",
       },
     });
   }
+
+  // Get all users for permissions tab
+  const [admins, teachers] = await Promise.all([
+    prisma.admin.findMany({
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        staffId: true,
+        role: true,
+      },
+    }),
+    prisma.teacher.findMany({
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        surname: true,
+        staffId: true,
+      },
+    }),
+  ]);
+
+  // Get all classes for migration tab
+  const classes = await prisma.class.findMany({
+    include: {
+      grade: true,
+      students: {
+        select: {
+          id: true,
+          name: true,
+          surname: true,
+        },
+      },
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
 
   return (
     <div className="space-y-6">
@@ -38,18 +78,7 @@ export default async function SettingsPage() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>School Information & Branding</CardTitle>
-          <CardDescription>
-            Customize your school's name, contact information, and branding colors
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SettingsForm settings={settings} />
-        </CardContent>
-      </Card>
+      <SettingsPageClient settings={settings} admins={admins} teachers={teachers} classes={classes} />
     </div>
   );
 }
-

@@ -410,6 +410,12 @@ model SystemSettings {
   currency        String   @default("USD")
   timezone        String   @default("UTC")
   dateFormat      String   @default("MM/dd/yyyy")
+  // Term/Semester Settings
+  currentTerm     String   @default("First Term")
+  vacationDate    DateTime?
+  reopeningDate   DateTime?
+  totalAttendanceDays Int   @default(0)
+  studentIdInitials String  @default("CTS")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
