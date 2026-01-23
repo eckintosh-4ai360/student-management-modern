@@ -100,63 +100,63 @@ export function MessageDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-gray-900">
+          <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-900 line-clamp-2">
             {message.subject}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
           {/* Message Header */}
-          <div className="flex items-start justify-between pb-4 border-b">
-            <div className="flex items-start">
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center font-bold mr-4 flex-shrink-0 text-lg">
-                {otherUser.name.charAt(0)}{otherUser.surname.charAt(0)}
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between pb-4 border-b gap-4">
+              <div className="flex items-start">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center font-bold mr-3 sm:mr-4 flex-shrink-0 text-base sm:text-lg">
+                  {otherUser.name.charAt(0)}{otherUser.surname.charAt(0)}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-base sm:text-lg font-semibold text-gray-900 truncate">
+                    {isInbox ? "From: " : "To: "}
+                    {otherUser.name} {otherUser.surname}
+                  </p>
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">@{otherUser.username}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500 mt-1">
+                    {format(new Date(message.createdAt), "MMMM dd, yyyy 'at' h:mm a")}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-lg font-semibold text-gray-900">
-                  {isInbox ? "From: " : "To: "}
-                  {otherUser.name} {otherUser.surname}
-                </p>
-                <p className="text-sm text-gray-600">@{otherUser.username}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {format(new Date(message.createdAt), "MMMM dd, yyyy 'at' h:mm a")}
-                </p>
+              
+              <div className="flex items-center gap-2 self-end sm:self-start">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleToggleStar}
+                  disabled={isPending}
+                >
+                  <Star className={`w-4 h-4 ${message.starred ? "fill-yellow-400 text-yellow-400" : ""}`} />
+                </Button>
               </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleToggleStar}
-                disabled={isPending}
-              >
-                <Star className={`w-4 h-4 ${message.starred ? "fill-yellow-400 text-yellow-400" : ""}`} />
-              </Button>
-            </div>
-          </div>
 
           {/* Message Content */}
-          <div className="bg-gray-50 rounded-lg p-6">
-            <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+          <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
+            <p className="text-sm sm:text-base text-gray-800 whitespace-pre-wrap leading-relaxed">
               {message.content}
             </p>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3 pt-4 border-t">
+          <div className="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t">
             {isInbox && (
               <Button
                 onClick={() => setIsReplying(!isReplying)}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
               >
                 <Reply className="w-4 h-4 mr-2" />
                 Reply
               </Button>
             )}
-            <Button variant="outline" onClick={onClose}>
+            <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
               Close
             </Button>
           </div>
@@ -187,7 +187,7 @@ export function MessageDetailModal({
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3">
+              <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
                 <Button
                   type="button"
                   variant="outline"
@@ -196,13 +196,14 @@ export function MessageDetailModal({
                     setReplyContent("");
                   }}
                   disabled={isPending}
+                  className="w-full sm:w-auto"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending || !replyContent.trim()}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
                 >
                   {isPending ? (
                     <>Sending...</>

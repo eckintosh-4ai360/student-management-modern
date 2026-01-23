@@ -37,24 +37,24 @@ export function AnnouncementActions({ announcement, classes }: AnnouncementActio
 
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap flex-shrink-0">
         <Button 
           variant="outline" 
           size="sm" 
           onClick={() => setEditOpen(true)}
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 flex-1 sm:flex-none justify-center"
         >
           <Pencil className="w-3 h-3" />
-          Edit
+          <span className="hidden xs:inline">Edit</span>
         </Button>
         <Button 
           variant="destructive" 
           size="sm" 
           onClick={() => setDeleteOpen(true)}
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 flex-1 sm:flex-none justify-center"
         >
           <Trash2 className="w-3 h-3" />
-          Delete
+          <span className="hidden xs:inline">Delete</span>
         </Button>
       </div>
 

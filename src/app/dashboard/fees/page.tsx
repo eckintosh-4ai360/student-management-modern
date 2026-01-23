@@ -90,38 +90,46 @@ export default async function FeesPage({
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Amount</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">GH₵{totalAmount.toFixed(2)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Paid Amount</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">GH₵{paidAmount.toFixed(2)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Pending Amount</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">GH₵{pendingAmount.toFixed(2)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Overdue Amount</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">GH₵{overdueAmount.toFixed(2)}</div>
-          </CardContent>
-        </Card>
+        <Link href="/dashboard/fees" className="block">
+          <Card className={`hover:shadow-md transition-shadow cursor-pointer ${statusFilter === "all" ? "ring-2 ring-blue-500" : ""}`}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600">Total Amount</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">GH₵{totalAmount.toFixed(2)}</div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/fees?status=PAID" className="block">
+          <Card className={`hover:shadow-md transition-shadow cursor-pointer ${statusFilter === "PAID" ? "ring-2 ring-green-500" : ""}`}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600">Paid Amount</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">GH₵{paidAmount.toFixed(2)}</div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/fees?status=PENDING" className="block">
+          <Card className={`hover:shadow-md transition-shadow cursor-pointer ${statusFilter === "PENDING" ? "ring-2 ring-orange-500" : ""}`}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600">Pending Amount</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-orange-600">GH₵{pendingAmount.toFixed(2)}</div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/fees?status=OVERDUE" className="block">
+          <Card className={`hover:shadow-md transition-shadow cursor-pointer ${statusFilter === "OVERDUE" ? "ring-2 ring-red-500" : ""}`}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600">Overdue Amount</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-red-600">GH₵{overdueAmount.toFixed(2)}</div>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       {/* Filter Tabs */}

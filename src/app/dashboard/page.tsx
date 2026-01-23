@@ -570,31 +570,35 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-l-4 border-l-orange-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
-                <AlertCircle className="w-4 h-4 mr-2 text-orange-500" />
-                Pending Payments
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold text-orange-600">{feeStats?.pending} Bills</div>
-              <p className="text-xs text-gray-500 mt-1">${(feeStats?.total || 0).toFixed(2)} total</p>
-            </CardContent>
-          </Card>
+          <Link href="/dashboard/fees?status=PENDING" className="block">
+            <Card className="border-l-4 border-l-orange-500 hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+                  <AlertCircle className="w-4 h-4 mr-2 text-orange-500" />
+                  Pending Payments
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-orange-600">{feeStats?.pending} Bills</div>
+                <p className="text-xs text-gray-500 mt-1">${(feeStats?.total || 0).toFixed(2)} total</p>
+              </CardContent>
+            </Card>
+          </Link>
 
-          <Card className="border-l-4 border-l-red-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
-                <AlertCircle className="w-4 h-4 mr-2 text-red-500" />
-                Overdue
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold text-red-600">{feeStats?.overdue} Bills</div>
-              <p className="text-xs text-gray-500 mt-1">Requires attention</p>
-            </CardContent>
-          </Card>
+          <Link href="/dashboard/fees?status=OVERDUE" className="block">
+            <Card className="border-l-4 border-l-red-500 hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+                  <AlertCircle className="w-4 h-4 mr-2 text-red-500" />
+                  Overdue
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-red-600">{feeStats?.overdue} Bills</div>
+                <p className="text-xs text-gray-500 mt-1">Requires attention</p>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

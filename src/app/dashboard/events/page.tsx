@@ -11,7 +11,7 @@ export default async function EventsPage() {
       include: {
         class: true,
       },
-      orderBy: { startTime: "desc" },
+      orderBy: { startTime: "asc" },
       take: 50,
     }),
     prisma.class.findMany({

@@ -84,7 +84,7 @@ export default function Navbar() {
   }, [showUserMenu]);
 
   return (
-    <header className="h-16 border-b border-gray-200 bg-white flex items-center justify-between px-6 sticky top-0 z-30">
+    <header className="h-16 border-b border-gray-200 bg-white flex items-center justify-between px-3 md:px-6 sticky top-0 z-30">
       <div className="flex items-center space-x-4 flex-1">
         {/* Hamburger Menu Button */}
         <button
@@ -95,7 +95,7 @@ export default function Navbar() {
           <Menu className="w-6 h-6 text-gray-700" />
         </button>
 
-        <div className="relative flex-1 max-w-md">
+        <div className="relative flex-1 max-w-md hidden sm:block">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <Input
             type="search"
@@ -145,15 +145,15 @@ export default function Navbar() {
                 session?.user?.name?.charAt(0).toUpperCase()
               )}
             </div>
-            <div className="hidden md:block text-left">
-              <p className="text-sm font-semibold text-gray-900">
+            <div className="md:block hidden text-left">
+              <p className="text-sm font-semibold text-gray-900 line-clamp-1">
                 {userData ? (userData.userType === "ADMIN" ? userData.name : `${userData.name} ${userData.surname}`) : session?.user?.name}
               </p>
               <p className="text-xs text-gray-500 capitalize">
                 {(session?.user as any)?.role || "User"}
               </p>
             </div>
-            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${showUserMenu ? "rotate-180" : ""}`} />
+            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform flex-shrink-0 ${showUserMenu ? "rotate-180" : ""}`} />
           </button>
 
           {/* Dropdown Menu */}

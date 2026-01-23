@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { ComposeMessageModal } from "@/components/forms/ComposeMessageModal";
 import { MessageDetailModal } from "@/components/messages/MessageDetailModal";
+import { CommunicationGuideModal } from "@/components/messages/CommunicationGuideModal";
 import { useRouter } from "next/navigation";
 
 type Message = {
@@ -42,6 +43,7 @@ type Props = {
 
 export function MessagesPageClient({ messages, userId, userType, activeTab }: Props) {
   const [isComposeOpen, setIsComposeOpen] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const router = useRouter();
 
@@ -73,17 +75,17 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-2xl p-8 shadow-2xl">
-        <div className="flex items-center justify-between">
+      <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-2xl p-6 sm:p-8 shadow-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Messages & Communication</h1>
-            <p className="text-blue-100 text-lg">
+            <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-center sm:text-left">Messages & Communication</h1>
+            <p className="text-blue-100 text-base sm:text-lg text-center sm:text-left">
               Connect with teachers, students, and parents
             </p>
           </div>
           <Button
             onClick={() => setIsComposeOpen(true)}
-            className="bg-white text-blue-600 hover:bg-blue-50 px-6 py-6 text-lg"
+            className="bg-white text-blue-600 hover:bg-blue-50 px-6 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto"
           >
             <Send className="w-5 h-5 mr-2" />
             New Message
@@ -92,7 +94,7 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <Card className="border-l-4 border-l-blue-500 hover:shadow-xl transition-all duration-300 cursor-pointer"
           onClick={() => changeTab("inbox")}>
           <CardHeader className="pb-3">
@@ -151,11 +153,11 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
       </div>
 
       {/* Message Tabs */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none sm:scrollbar-auto no-scrollbar sm:flex-wrap">
         <Button
           variant={activeTab === "inbox" ? "default" : "outline"}
           onClick={() => changeTab("inbox")}
-          className={activeTab === "inbox" ? "bg-blue-600" : ""}
+          className={`${activeTab === "inbox" ? "bg-blue-600" : ""} flex-shrink-0`}
         >
           <Inbox className="w-4 h-4 mr-2" />
           Inbox ({inboxMessages.length})
@@ -163,7 +165,7 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
         <Button
           variant={activeTab === "sent" ? "default" : "outline"}
           onClick={() => changeTab("sent")}
-          className={activeTab === "sent" ? "bg-green-600" : ""}
+          className={`${activeTab === "sent" ? "bg-green-600" : ""} flex-shrink-0`}
         >
           <Send className="w-4 h-4 mr-2" />
           Sent ({sentMessages.length})
@@ -171,7 +173,7 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
         <Button
           variant={activeTab === "starred" ? "default" : "outline"}
           onClick={() => changeTab("starred")}
-          className={activeTab === "starred" ? "bg-purple-600" : ""}
+          className={`${activeTab === "starred" ? "bg-purple-600" : ""} flex-shrink-0`}
         >
           <Star className="w-4 h-4 mr-2" />
           Starred ({starredMessages.length})
@@ -179,7 +181,7 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
         <Button
           variant={activeTab === "archived" ? "default" : "outline"}
           onClick={() => changeTab("archived")}
-          className={activeTab === "archived" ? "bg-gray-600" : ""}
+          className={`${activeTab === "archived" ? "bg-gray-600" : ""} flex-shrink-0`}
         >
           <Archive className="w-4 h-4 mr-2" />
           Archived ({archivedMessages.length})
@@ -215,32 +217,32 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
                     }`}
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex items-start flex-1">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                      <div className="flex items-start flex-1 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center font-bold mr-3 sm:mr-4 flex-shrink-0">
                           {otherUser.name.charAt(0)}{otherUser.surname.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <p className={`${!message.read && isInbox ? "font-bold" : "font-medium"} text-gray-900`}>
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1 gap-1">
+                            <p className={`${!message.read && isInbox ? "font-bold" : "font-medium"} text-sm sm:text-base text-gray-900 truncate`}>
                               {isInbox ? "" : "To: "}
                               {otherUser.name} {otherUser.surname}
                             </p>
-                            <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
+                            <span className="text-[10px] sm:text-xs text-gray-500 flex-shrink-0">
                               {format(new Date(message.createdAt), "MMM dd, h:mm a")}
                             </span>
                           </div>
-                          <p className={`text-sm ${!message.read && isInbox ? "font-semibold" : "font-normal"} text-gray-900 mb-1`}>
+                          <p className={`text-xs sm:text-sm ${!message.read && isInbox ? "font-semibold" : "font-normal"} text-gray-900 mb-1 truncate`}>
                             {message.subject}
                           </p>
-                          <p className="text-sm text-gray-600 line-clamp-2">
+                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-1 sm:line-clamp-2">
                             {message.content}
                           </p>
                           <div className="flex items-center gap-2 mt-2">
                             {message.starred && (
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
                             )}
                             {!message.read && isInbox && (
-                              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
                                 New
                               </span>
                             )}
@@ -248,8 +250,8 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
                         </div>
                       </div>
                       {!message.read && isInbox && (
-                        <div className="ml-4 flex-shrink-0">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <div className="ml-2 sm:ml-4 flex-shrink-0">
+                          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full"></div>
                         </div>
                       )}
                     </div>
@@ -278,8 +280,8 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
       {/* Communication Help Card */}
       <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
         <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="text-center sm:text-left">
               <h3 className="text-lg font-semibold text-gray-900 mb-1">
                 Need Help?
               </h3>
@@ -287,13 +289,22 @@ export function MessagesPageClient({ messages, userId, userType, activeTab }: Pr
                 Seamlessly communicate with teachers, students, and parents within the system
               </p>
             </div>
-            <Button className="bg-purple-600 hover:bg-purple-700">
+            <Button 
+              onClick={() => setIsGuideOpen(true)}
+              className="bg-purple-600 hover:bg-purple-700 w-full sm:w-auto"
+            >
               <MessageSquare className="w-4 h-4 mr-2" />
               Communication Guide
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Communication Guide Modal */}
+      <CommunicationGuideModal
+        isOpen={isGuideOpen}
+        onClose={() => setIsGuideOpen(false)}
+      />
 
       {/* Compose Message Modal */}
       <ComposeMessageModal

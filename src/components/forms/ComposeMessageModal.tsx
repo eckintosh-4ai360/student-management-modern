@@ -94,10 +94,10 @@ export function ComposeMessageModal({ isOpen, onClose, currentUserId, currentUse
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center">
-            <Send className="w-6 h-6 mr-2 text-blue-600" />
+          <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center">
+            <Send className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" />
             Compose New Message
           </DialogTitle>
         </DialogHeader>
@@ -131,7 +131,7 @@ export function ComposeMessageModal({ isOpen, onClose, currentUserId, currentUse
                     setSelectedUser(null);
                     setSearchQuery("");
                   }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -185,7 +185,7 @@ export function ComposeMessageModal({ isOpen, onClose, currentUserId, currentUse
                     setSelectedUser(null);
                     setSearchQuery("");
                   }}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 hover:text-gray-600 p-1"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -224,19 +224,20 @@ export function ComposeMessageModal({ isOpen, onClose, currentUserId, currentUse
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t">
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={isPending}
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={isPending || !selectedUser}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 w-full sm:w-auto"
             >
               {isPending ? (
                 <>Sending...</>

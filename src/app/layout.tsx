@@ -49,6 +49,7 @@ export default async function RootLayout({
       <body className={inter.className} suppressHydrationWarning>
         <SessionProvider>
           {children}
+          <div id="datepicker-portal" className="relative z-[9999]" />
           <ToastContainer position="top-right" autoClose={3000} />
         </SessionProvider>
       </body>

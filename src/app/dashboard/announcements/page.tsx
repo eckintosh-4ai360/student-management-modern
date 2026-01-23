@@ -47,15 +47,15 @@ export default async function AnnouncementsPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Announcements</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Announcements</h1>
           <p className="text-gray-500 mt-1">View all school announcements</p>
         </div>
         <AddAnnouncementButton classes={classes} />
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
         <SearchBar placeholder="Search announcements by title or description..." />
         <FilterSelect
           options={classes.map((c) => ({ label: c.name, value: c.id.toString() }))}
@@ -68,10 +68,10 @@ export default async function AnnouncementsPage({
         {announcements.map((announcement) => (
           <Card key={announcement.id} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <h3 className="text-xl font-semibold">{announcement.title}</h3>
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <h3 className="text-lg sm:text-xl font-semibold">{announcement.title}</h3>
                     {announcement.class && (
                       <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
                         {announcement.class.name}

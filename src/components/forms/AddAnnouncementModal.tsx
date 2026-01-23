@@ -69,7 +69,7 @@ export function AddAnnouncementModal({ open, onOpenChange, classes }: AddAnnounc
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-[95vw] sm:max-w-[425px] overflow-y-auto max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>New Announcement</DialogTitle>
           <DialogDescription>Create a new school announcement</DialogDescription>
@@ -130,11 +130,11 @@ export function AddAnnouncementModal({ open, onOpenChange, classes }: AddAnnounc
             </div>
           )}
 
-          <div className="flex justify-end gap-3">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-6">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending} className="sm:w-auto w-full">
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="sm:w-auto w-full">
               {isPending ? "Creating..." : "Create Announcement"}
             </Button>
           </div>
