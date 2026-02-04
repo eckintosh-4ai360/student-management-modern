@@ -20,6 +20,7 @@ import {
   AnnouncementSchema,
   FeeSchema,
   AdminSchema,
+  TimetableSchema,
 } from "./formValidationSchemas";
 
 type ActionState = { success: boolean; error: boolean; message?: string };

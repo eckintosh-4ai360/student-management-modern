@@ -32,101 +32,124 @@ export function ViewTeacherModal({ open, onOpenChange, teacher }: ViewTeacherMod
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-6xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>Teacher Details</span>
+          <DialogTitle className="flex items-center justify-between border-b pb-4">
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Teacher Profile
+            </span>
             <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
               <X className="w-4 h-4" />
             </Button>
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          {/* Profile Picture */}
-          <div className="flex justify-center">
-            {teacher.img ? (
-              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200">
-                <Image
-                  src={teacher.img}
-                  alt={`${teacher.name} ${teacher.surname}`}
-                  width={128}
-                  height={128}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            ) : (
-              <div className="w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center border-4 border-gray-200">
-                <User className="w-16 h-16 text-primary" />
-              </div>
-            )}
-          </div>
-
-          {/* Basic Info */}
-          <div>
-            <h3 className="font-semibold text-lg mb-3">Personal Information</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <p className="text-sm text-gray-500">Full Name</p>
-                <p className="font-medium">{teacher.name} {teacher.surname}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Username</p>
-                <p className="font-medium">@{teacher.username}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Birthday</p>
-                <p className="font-medium">{format(new Date(teacher.birthday), "MMMM dd, yyyy")}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Gender</p>
-                <p className="font-medium">{teacher.sex}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Blood Type</p>
-                <p className="font-medium">{teacher.bloodType}</p>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 py-4">
+          {/* Column 1: Profile & Highlight (3/12) */}
+          <div className="md:col-span-3 flex flex-col items-center space-y-4 border-r pr-6 border-border/50">
+            <div className="relative group">
+              {teacher.img ? (
+                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/20 shadow-xl transition-transform group-hover:scale-105">
+                  <Image
+                    src={teacher.img}
+                    alt={`${teacher.name} ${teacher.surname}`}
+                    width={160}
+                    height={160}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ) : (
+                <div className="w-40 h-40 bg-primary/10 rounded-full flex items-center justify-center border-4 border-primary/20 shadow-xl">
+                  <User className="w-20 h-20 text-primary" />
+                </div>
+              )}
+            </div>
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-foreground line-clamp-2">
+                {teacher.name} {teacher.surname}
+              </h2>
+              <p className="text-muted-foreground font-medium">@{teacher.username}</p>
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
+                <span className="px-3 py-1 bg-blue-500/10 text-blue-500 text-xs font-bold rounded-full border border-blue-500/20 uppercase">
+                  Teacher
+                </span>
+                <span className="px-3 py-1 bg-purple-500/10 text-purple-500 text-xs font-bold rounded-full border border-purple-500/20 uppercase">
+                  ID: {teacher.id.slice(0, 8)}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Contact Info */}
-          <div>
-            <h3 className="font-semibold text-lg mb-3">Contact Information</h3>
-            <div className="space-y-2">
-              <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium">{teacher.email || "Not provided"}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Phone</p>
-                <p className="font-medium">{teacher.phone || "Not provided"}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Address</p>
-                <p className="font-medium">{teacher.address}</p>
+          {/* Column 2: Personal Details (4/12) */}
+          <div className="md:col-span-4 space-y-6">
+            <div>
+              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center">
+                <span className="w-8 h-[2px] bg-primary mr-2" />
+                Personal Information
+              </h3>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="bg-muted/10 p-3 rounded-lg border border-border/50">
+                  <p className="text-xs text-muted-foreground">Birthday</p>
+                  <p className="font-semibold">{format(new Date(teacher.birthday), "MMMM dd, yyyy")}</p>
+                </div>
+                <div className="bg-muted/10 p-3 rounded-lg border border-border/50">
+                  <p className="text-xs text-muted-foreground">Gender</p>
+                  <p className="font-semibold">{teacher.sex}</p>
+                </div>
+                <div className="bg-muted/10 p-3 rounded-lg border border-border/50">
+                  <p className="text-xs text-muted-foreground">Blood Type</p>
+                  <p className="font-semibold focus:text-primary">{teacher.bloodType}</p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Subjects */}
-          <div>
-            <h3 className="font-semibold text-lg mb-3">Subjects Teaching</h3>
-            {teacher.subjects.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {teacher.subjects.map((subject, idx) => (
-                  <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm">
-                    {subject.name}
-                  </span>
-                ))}
+          {/* Column 3: Contact & Academic (5/12) */}
+          <div className="md:col-span-5 space-y-6">
+            <div>
+              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center">
+                <span className="w-8 h-[2px] bg-primary mr-2" />
+                Contact & Subjects
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-start bg-muted/20 p-4 rounded-xl border border-border/50">
+                  <div className="space-y-3 w-full">
+                    <div className="flex justify-between items-center border-b border-border/50 pb-2">
+                      <p className="text-sm text-muted-foreground">Email</p>
+                      <p className="font-medium text-sm truncate max-w-[200px]">{teacher.email || "Not provided"}</p>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-border/50 pb-2">
+                      <p className="text-sm text-muted-foreground">Phone</p>
+                      <p className="font-medium text-sm">{teacher.phone || "Not provided"}</p>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-sm text-muted-foreground mb-1">Address</p>
+                      <p className="font-medium text-sm line-clamp-2">{teacher.address}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <p className="text-sm font-semibold text-foreground mb-3">Subjects Teaching</p>
+                  {teacher.subjects.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {teacher.subjects.map((subject, idx) => (
+                        <span key={idx} className="px-3 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-md text-sm border border-blue-500/20 shadow-sm">
+                          {subject.name}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-sm italic">No subjects assigned</p>
+                  )}
+                </div>
               </div>
-            ) : (
-              <p className="text-gray-500 text-sm">No subjects assigned</p>
-            )}
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-end mt-4">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <div className="flex justify-end pt-4 border-t mt-6">
+          <Button variant="outline" className="px-8" onClick={() => onOpenChange(false)}>
             Close
           </Button>
         </div>

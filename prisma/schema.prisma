@@ -8,19 +8,19 @@ datasource db {
 }
 
 model Admin {
-  id       String @id @default(uuid())
-  username String @unique
-  staffId  String @unique
-  password String
-  name     String
-  email    String? @unique
-  phone    String?
-  img      String?
-  role     AdminRole @default(ADMIN)
-  resetToken String?
+  id               String    @id @default(uuid())
+  username         String    @unique
+  staffId          String    @unique
+  password         String
+  name             String
+  email            String?   @unique
+  phone            String?
+  img              String?
+  role             AdminRole @default(ADMIN)
+  resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 enum AdminRole {
@@ -29,79 +29,79 @@ enum AdminRole {
 }
 
 model Student {
-  id          String       @id @default(uuid())
-  username    String       @unique
-  studentId   String       @unique
-  password    String
-  name        String
-  surname     String
-  email       String?      @unique
-  phone       String?      @unique
-  address     String
-  img         String?
-  bloodType   String
-  sex         UserSex
-  birthday    DateTime
-  nationality String?
-  firstLanguage String?
-  enrollmentDate DateTime?
-  resetToken String?
+  id               String          @id @default(uuid())
+  username         String          @unique
+  studentId        String          @unique
+  password         String
+  name             String
+  surname          String
+  email            String?         @unique
+  phone            String?         @unique
+  address          String
+  img              String?
+  bloodType        String
+  sex              UserSex
+  birthday         DateTime
+  nationality      String?
+  firstLanguage    String?
+  enrollmentDate   DateTime?
+  resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  parentId    String?
-  parent      Parent?      @relation(fields: [parentId], references: [id])
-  classId     Int
-  class       Class        @relation(fields: [classId], references: [id])
-  gradeId     Int
-  grade       Grade        @relation(fields: [gradeId], references: [id])
-  attendances Attendance[]
-  results     Result[]
-  fees        Fee[]
-  behaviors   Behavior[]
-  medicalInfo MedicalInfo?
-  documents   Document[]
-  comments    Comment[]
-  studentAnswers StudentAnswer[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  parentId         String?
+  parent           Parent?         @relation(fields: [parentId], references: [id])
+  classId          Int
+  class            Class           @relation(fields: [classId], references: [id])
+  gradeId          Int
+  grade            Grade           @relation(fields: [gradeId], references: [id])
+  attendances      Attendance[]
+  results          Result[]
+  fees             Fee[]
+  behaviors        Behavior[]
+  medicalInfo      MedicalInfo?
+  documents        Document[]
+  comments         Comment[]
+  studentAnswers   StudentAnswer[]
 }
 
 model Teacher {
-  id        String    @id @default(uuid())
-  username  String    @unique
-  staffId   String    @unique
-  password  String
-  name      String
-  surname   String
-  email     String?   @unique
-  phone     String?   @unique
-  address   String
-  img       String?
-  bloodType String
-  sex       UserSex
-  birthday  DateTime
-  resetToken String?
+  id               String    @id @default(uuid())
+  username         String    @unique
+  staffId          String    @unique
+  password         String
+  name             String
+  surname          String
+  email            String?   @unique
+  phone            String?   @unique
+  address          String
+  img              String?
+  bloodType        String
+  sex              UserSex
+  birthday         DateTime
+  resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  subjects  Subject[]
-  lessons   Lesson[]
-  classes   Class[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  subjects         Subject[]
+  lessons          Lesson[]
+  classes          Class[]
 }
 
 model Parent {
-  id        String    @id @default(uuid())
-  username  String    @unique
-  password  String
-  name      String
-  surname   String
-  email     String?   @unique
-  phone     String    @unique
-  address   String
-  resetToken String?
+  id               String    @id @default(uuid())
+  username         String    @unique
+  password         String
+  name             String
+  surname          String
+  email            String?   @unique
+  phone            String    @unique
+  address          String
+  resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  students  Student[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  students         Student[]
 }
 
 model Grade {
@@ -160,40 +160,40 @@ model Exam {
 }
 
 model Assignment {
-  id        Int      @id @default(autoincrement())
+  id        Int                  @id @default(autoincrement())
   title     String
   startDate DateTime
   dueDate   DateTime
   lessonId  Int
-  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+  lesson    Lesson               @relation(fields: [lessonId], references: [id])
   results   Result[]
   questions AssignmentQuestion[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @default(now()) @updatedAt
 }
 
 model AssignmentQuestion {
-  id           Int      @id @default(autoincrement())
+  id           Int              @id @default(autoincrement())
   assignmentId Int
-  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   questionType QuestionType
-  questionText String   @db.Text
-  points       Int      @default(10)
+  questionText String           @db.Text
+  points       Int              @default(10)
   fileUrl      String?
   fileType     String?
   options      QuestionOption[]
   answers      StudentAnswer[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 }
 
 model QuestionOption {
-  id         Int      @id @default(autoincrement())
+  id         Int                @id @default(autoincrement())
   questionId Int
   question   AssignmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  optionText String   @db.Text
-  isCorrect  Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  optionText String             @db.Text
+  isCorrect  Boolean            @default(false)
+  createdAt  DateTime           @default(now())
   selectedBy StudentAnswer[]
 }
 
@@ -241,16 +241,16 @@ model Announcement {
 }
 
 model Fee {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   amount      Float
   dueDate     DateTime
   status      FeeStatus @default(PENDING)
-  description String?  @db.Text
+  description String?   @db.Text
   studentId   String
-  student     Student  @relation(fields: [studentId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  student     Student   @relation(fields: [studentId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 enum UserSex {
@@ -273,36 +273,36 @@ enum FeeStatus {
 }
 
 model Behavior {
-  id          Int      @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   title       String
-  description String   @db.Text
+  description String           @db.Text
   type        BehaviorType
   severity    BehaviorSeverity
   date        DateTime
   studentId   String
-  student     Student  @relation(fields: [studentId], references: [id])
+  student     Student          @relation(fields: [studentId], references: [id])
   reportedBy  String
-  actionTaken String?  @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  actionTaken String?          @db.Text
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 }
 
 model MedicalInfo {
-  id              Int      @id @default(autoincrement())
-  studentId       String   @unique
-  student         Student  @relation(fields: [studentId], references: [id])
-  allergies       String?  @db.Text
-  medications     String?  @db.Text
-  conditions      String?  @db.Text
-  immunizations   String?  @db.Text
-  bloodType       String?
+  id               Int      @id @default(autoincrement())
+  studentId        String   @unique
+  student          Student  @relation(fields: [studentId], references: [id])
+  allergies        String?  @db.Text
+  medications      String?  @db.Text
+  conditions       String?  @db.Text
+  immunizations    String?  @db.Text
+  bloodType        String?
   emergencyContact String?
-  emergencyPhone  String?
-  doctorName      String?
-  doctorPhone     String?
-  notes           String?  @db.Text
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  emergencyPhone   String?
+  doctorName       String?
+  doctorPhone      String?
+  notes            String?  @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model Message {
@@ -328,28 +328,28 @@ enum UserType {
 }
 
 model Document {
-  id        Int      @id @default(autoincrement())
-  title     String
-  type      String
-  fileUrl   String
-  studentId String
-  student   Student  @relation(fields: [studentId], references: [id])
+  id         Int      @id @default(autoincrement())
+  title      String
+  type       String
+  fileUrl    String
+  studentId  String
+  student    Student  @relation(fields: [studentId], references: [id])
   uploadedBy String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
-  content   String   @db.Text
-  category  String
-  studentId String
-  student   Student  @relation(fields: [studentId], references: [id])
-  authorId  String
+  id         Int      @id @default(autoincrement())
+  content    String   @db.Text
+  category   String
+  studentId  String
+  student    Student  @relation(fields: [studentId], references: [id])
+  authorId   String
   authorName String
   authorRole String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 enum BehaviorType {
@@ -371,51 +371,73 @@ enum QuestionType {
 }
 
 model StudentAnswer {
-  id           Int      @id @default(autoincrement())
-  studentId    String
-  student      Student  @relation(fields: [studentId], references: [id])
-  questionId   Int
-  question     AssignmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  answerText   String?  @db.Text
+  id               Int                @id @default(autoincrement())
+  studentId        String
+  student          Student            @relation(fields: [studentId], references: [id])
+  questionId       Int
+  question         AssignmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answerText       String?            @db.Text
   selectedOptionId Int?
-  selectedOption   QuestionOption? @relation(fields: [selectedOptionId], references: [id])
-  isCorrect    Boolean?
-  pointsEarned Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  selectedOption   QuestionOption?    @relation(fields: [selectedOptionId], references: [id])
+  isCorrect        Boolean?
+  pointsEarned     Int                @default(0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   @@unique([studentId, questionId])
 }
 
 model SystemSettings {
-  id              Int      @id @default(autoincrement())
-  schoolName      String   @default("Student Management System")
-  schoolShortName String   @default("SMS")
-  schoolLogo      String?
-  primaryColor    String   @default("#3b82f6")
-  secondaryColor  String   @default("#8b5cf6")
-  accentColor     String   @default("#ec4899")
-  schoolEmail     String?
-  schoolPhone     String?
-  schoolAddress   String?
-  schoolWebsite   String?
-  emailHost       String?
-  emailPort       Int?
-  emailUser       String?
-  emailPassword   String?
-  smsApiKey       String?
-  smsApiSecret    String?
-  smsSenderId     String?
-  academicYear    String   @default("2024-2025")
-  currency        String   @default("USD")
-  timezone        String   @default("UTC")
-  dateFormat      String   @default("MM/dd/yyyy")
+  id                  Int       @id @default(autoincrement())
+  schoolName          String    @default("Student Management System")
+  schoolShortName     String    @default("SMS")
+  schoolLogo          String?
+  primaryColor        String    @default("#3b82f6")
+  secondaryColor      String    @default("#8b5cf6")
+  accentColor         String    @default("#ec4899")
+  schoolEmail         String?
+  schoolPhone         String?
+  schoolAddress       String?
+  schoolWebsite       String?
+  emailHost           String?
+  emailPort           Int?
+  emailUser           String?
+  emailPassword       String?
+  smsApiKey           String?
+  smsApiSecret        String?
+  smsSenderId         String?
+  academicYear        String    @default("2024-2025")
+  currency            String    @default("USD")
+  timezone            String    @default("UTC")
+  dateFormat          String    @default("MM/dd/yyyy")
   // Term/Semester Settings
-  currentTerm     String   @default("First Term")
-  vacationDate    DateTime?
-  reopeningDate   DateTime?
-  totalAttendanceDays Int   @default(0)
-  studentIdInitials String  @default("CTS")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  currentTerm         String    @default("First Term")
+  vacationDate        DateTime?
+  reopeningDate       DateTime?
+  totalAttendanceDays Int       @default(0)
+  studentIdInitials   String    @default("CTS")
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  userName  String
+  role      String
+  action    String
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model Timetable {
+  id           Int      @id @default(autoincrement())
+  title        String
+  semester     String
+  academicYear String
+  fileUrl      String
+  fileType     String // "PDF" or "IMAGE"
+  uploadedBy   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

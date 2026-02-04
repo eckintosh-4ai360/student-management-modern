@@ -44,7 +44,7 @@ export function AdminTableRow({ admin }: AdminTableRowProps) {
 
   return (
     <>
-      <tr className="border-b hover:bg-gray-50">
+      <tr className="border-b transition-colors hover:bg-muted/50">
         <td className="p-4">
           <div className="flex items-center space-x-3">
             {admin.img ? (
@@ -76,7 +76,7 @@ export function AdminTableRow({ admin }: AdminTableRowProps) {
             {roleLabel}
           </span>
         </td>
-        <td className="p-4 text-sm text-gray-500">
+        <td className="p-4 text-sm text-muted-foreground">
           {new Date(admin.createdAt).toLocaleDateString()}
         </td>
         <td className="p-4">

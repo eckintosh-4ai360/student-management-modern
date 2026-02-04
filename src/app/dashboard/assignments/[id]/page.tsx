@@ -319,7 +319,7 @@ export default async function AssignmentViewPage({ params }: { params: Promise<{
                   {assignment.results.map((result) => {
                     const percentage = totalPoints > 0 ? (result.score / totalPoints) * 100 : 0;
                     return (
-                      <tr key={result.id} className="border-b hover:bg-gray-50">
+                      <tr key={result.id} className="border-b hover:bg-muted/50 transition-colors">
                         <td className="p-4">
                           <div className="flex items-center">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center font-semibold mr-3">

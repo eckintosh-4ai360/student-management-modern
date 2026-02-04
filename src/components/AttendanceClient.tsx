@@ -122,7 +122,7 @@ export function AttendanceClient({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">
+        <h1 className="text-foreground font-bold">
           STUDENTS DAILY ATTENDANCE – (MARK CLASS REGISTER HERE)
         </h1>
       </div>
@@ -138,8 +138,8 @@ export function AttendanceClient({
             }}
             className={`px-4 py-2 rounded-full font-semibold transition-all ${
               selectedClassId === cls.id
-                ? "bg-indigo-600 text-white shadow-lg"
-                : "bg-indigo-500 text-white hover:bg-indigo-600"
+                ? "bg-primary text-primary-foreground shadow-lg"
+                : "bg-muted text-foreground hover:bg-muted/80"
             }`}
           >
             {cls.name}
@@ -153,21 +153,21 @@ export function AttendanceClient({
         <Button
           variant="outline"
           size="sm"
-          className="bg-blue-600 text-white hover:bg-blue-700 border-0"
+          className="bg-primary/10 text-primary hover:bg-primary/20 border-0"
         >
           JHS 1
         </Button>
         <Button
           variant="outline"
           size="sm"
-          className="bg-blue-600 text-white hover:bg-blue-700 border-0"
+          className="bg-primary/10 text-primary hover:bg-primary/20 border-0"
         >
           JHS 2
         </Button>
         <Button
           variant="outline"
           size="sm"
-          className="bg-blue-600 text-white hover:bg-blue-700 border-0"
+          className="bg-primary/10 text-primary hover:bg-primary/20 border-0"
         >
           JHS 3
         </Button>
@@ -213,15 +213,15 @@ export function AttendanceClient({
                 placeholder="mm/dd/yyyy"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-2 w-32"
+                className="border border-input bg-background w-32"
               />
-              <span className="text-gray-500">to</span>
+              <span className="text-muted-foreground">to</span>
               <input
                 type="text"
                 placeholder="mm/dd/yyyy"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-2 w-32"
+                className="border border-input bg-background w-32"
               />
             </div>
 
@@ -231,7 +231,7 @@ export function AttendanceClient({
             </Button>
 
             <div className="ml-auto flex items-center gap-3">
-              <span className="text-gray-700 font-semibold">
+              <span className="text-foreground font-semibold">
                 Today's Attendance:{" "}
                 <span className={isSubmitted ? "text-red-600" : "text-green-600"}>
                   {isSubmitted ? "Unmarked" : `${markedCount} marked`}
@@ -255,29 +255,29 @@ export function AttendanceClient({
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-100 border-b-2 border-gray-300">
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">S/N</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">LASTNAME</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">FIRSTNAME</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">OTHERNAME</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">LEVEL</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">GENDER</th>
-                  <th className="px-4 py-3 text-center font-semibold text-gray-700">
+                <tr className="bg-muted/50 border-border">
+                  <th className="px-4 py-3 text-left font-semibold text-foreground">S/N</th>
+                  <th className="px-4 py-3 text-left font-semibold text-foreground">LASTNAME</th>
+                  <th className="px-4 py-3 text-left font-semibold text-foreground">FIRSTNAME</th>
+                  <th className="px-4 py-3 text-left font-semibold text-foreground">OTHERNAME</th>
+                  <th className="px-4 py-3 text-left font-semibold text-foreground">LEVEL</th>
+                  <th className="px-4 py-3 text-left font-semibold text-foreground">GENDER</th>
+                  <th className="px-4 py-3 text-center font-semibold text-foreground">
                     PRESENT
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {selectedClass?.students.map((student, idx) => (
-                  <tr key={student.id} className="border-b hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 text-sm text-gray-700">{idx + 1}</td>
-                    <td className="px-4 py-3 text-sm font-medium text-gray-800">
+                  <tr key={student.id} className="border-b hover:bg-muted/50 transition-colors transition-colors">
+                    <td className="px-4 py-3 text-sm text-muted-foreground">{idx + 1}</td>
+                    <td className="px-4 py-3 text-foreground font-medium">
                       {student.surname.toUpperCase()}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-700">
+                    <td className="px-4 py-3 text-sm text-muted-foreground">
                       {student.name}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-700">
+                    <td className="px-4 py-3 text-sm text-muted-foreground">
                       {student.othername || ""}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700">
@@ -302,7 +302,7 @@ export function AttendanceClient({
           </div>
 
           {!selectedClass?.students || selectedClass.students.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-muted-foreground">
               No students found in this class.
             </div>
           )}

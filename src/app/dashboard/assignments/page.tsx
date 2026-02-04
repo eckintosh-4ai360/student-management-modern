@@ -39,7 +39,7 @@ export default async function AssignmentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Assignments</h1>
-          <p className="text-gray-500 mt-1">Manage all assignments</p>
+          <p className="text-muted-foreground mt-1">Manage all assignments</p>
         </div>
         <AddAssignmentButton lessons={lessons} />
       </div>
@@ -64,7 +64,7 @@ export default async function AssignmentsPage() {
               </thead>
               <tbody>
                 {assignments.map((assignment) => (
-                  <tr key={assignment.id} className="border-b hover:bg-gray-50">
+                  <tr key={assignment.id} className="border-b hover:bg-muted/50 transition-colors">
                     <td className="p-4 font-medium">{assignment.title}</td>
                     <td className="p-4 text-sm">{assignment.lesson.subject.name}</td>
                     <td className="p-4 text-sm">{assignment.lesson.class.name}</td>
@@ -76,7 +76,7 @@ export default async function AssignmentsPage() {
                       <div className={`text-xs ${
                         new Date(assignment.dueDate) < new Date()
                           ? "text-red-600"
-                          : "text-gray-500"
+                          : "text-muted-foreground"
                       }`}>
                         {new Date(assignment.dueDate) < new Date() ? "Overdue" : "Upcoming"}
                       </div>

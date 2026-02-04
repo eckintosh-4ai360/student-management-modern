@@ -179,6 +179,19 @@ const menuCategories = [
       },
     ],
   },
+  {
+    title: "System",
+    icon: ShieldCheck,
+    items: [
+      {
+        title: "Activity Logs",
+        icon: FileText,
+        href: "/dashboard/logs",
+        roles: ["admin"],
+        adminOnly: true,
+      },
+    ],
+  },
 ];
 
 export default function Sidebar() {

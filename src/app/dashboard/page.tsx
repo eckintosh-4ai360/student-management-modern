@@ -269,7 +269,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Students by Gender Chart */}
           <Card className="hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-blue-50/10 to-purple-50/10">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center">
                 <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
                 Students by Gender
@@ -331,7 +331,7 @@ export default async function DashboardPage() {
 
           {/* Class Enrollment Chart */}
           <Card className="hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-purple-50/10 to-indigo-50/10">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center">
                 <BarChart3 className="w-5 h-5 mr-2 text-purple-600" />
                 Enrollment Breakdown
@@ -343,11 +343,11 @@ export default async function DashboardPage() {
               </div>
               <div className="mt-6 pt-4 border-t">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 rounded-lg">
+                  <div className="bg-muted/20 p-4 rounded-lg">
                     <p className="text-xs text-muted-foreground font-medium">Total Classes</p>
                     <p className="text-2xl font-bold text-purple-600 mt-1">{classesEnrollment.length}</p>
                   </div>
-                  <div className="bg-gradient-to-br from-purple-50/10 to-indigo-50/10 p-4 rounded-lg">
+                  <div className="bg-muted/30 p-4 rounded-lg">
                     <p className="text-xs text-muted-foreground font-medium">Total Enrolled</p>
                     <p className="text-2xl font-bold text-indigo-600 mt-1">{totalStudents}</p>
                   </div>
@@ -361,7 +361,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Announcements */}
           <Card className="hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-yellow-50/10 to-orange-50/10">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center">
                   <MessageSquare className="w-5 h-5 mr-2 text-yellow-600" />
@@ -377,7 +377,7 @@ export default async function DashboardPage() {
                 {recentAnnouncements.slice(0, 4).map((announcement) => (
                   <div
                     key={announcement.id}
-                    className="p-4 rounded-lg bg-gradient-to-r from-blue-50/10 to-cyan-50/10 border border-border hover:shadow-md transition-shadow"
+                    className="p-4 rounded-lg bg-muted/20 border border-border hover:bg-muted/30 transition-all shadow-sm"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <h4 className="font-semibold text-lg">{announcement.title}</h4>
@@ -402,7 +402,7 @@ export default async function DashboardPage() {
 
           {/* Upcoming Events */}
           <Card className="hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center">
                   <Calendar className="w-5 h-5 mr-2 text-purple-600" />
@@ -418,7 +418,7 @@ export default async function DashboardPage() {
                 {recentEvents.map((event) => (
                   <div
                     key={event.id}
-                    className="p-4 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 hover:shadow-md transition-shadow"
+                    className="p-4 rounded-lg bg-muted/30 border border-border hover:bg-muted/40 transition-all shadow-sm"
                   >
                     <div className="flex items-start space-x-4">
                       <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex flex-col items-center justify-center text-white">
@@ -452,42 +452,42 @@ export default async function DashboardPage() {
         </div>
 
         {/* Quick Add Section */}
-        <Card className="bg-gradient-to-r from-gray-50 to-slate-50 border-2 border-dashed border-gray-300 hover:shadow-xl transition-shadow">
+        <Card className="bg-muted/20 border-2 border-dashed border-border hover:shadow-xl transition-shadow">
           <CardContent className="pt-6">
             <h3 className="text-xl font-bold mb-6 text-center">Quick Actions</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               <Link href="/dashboard/students">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-blue-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/50 hover:border-blue-300 transition-all">
                   <GraduationCap className="w-8 h-8 mb-2 text-blue-600" />
                   <span className="text-sm font-medium">Add Student</span>
                 </Button>
               </Link>
               <Link href="/dashboard/teachers">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-green-50 hover:border-green-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/50 hover:border-green-300 transition-all">
                   <Users className="w-8 h-8 mb-2 text-green-600" />
                   <span className="text-sm font-medium">Add Teacher</span>
                 </Button>
               </Link>
               <Link href="/dashboard/classes">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-purple-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/50 hover:border-purple-300 transition-all">
                   <BookOpen className="w-8 h-8 mb-2 text-purple-600" />
                   <span className="text-sm font-medium">Add Class</span>
                 </Button>
               </Link>
               <Link href="/dashboard/events">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-orange-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/50 hover:border-orange-300 transition-all">
                   <Calendar className="w-8 h-8 mb-2 text-orange-600" />
                   <span className="text-sm font-medium">Add Event</span>
                 </Button>
               </Link>
               <Link href="/dashboard/announcements">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-yellow-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/50 hover:border-yellow-300 transition-all">
                   <MessageSquare className="w-8 h-8 mb-2 text-yellow-600" />
                   <span className="text-sm font-medium">Add Notice</span>
                 </Button>
               </Link>
               <Link href="/dashboard/fees">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-pink-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/50 hover:border-pink-300 transition-all">
                   <Banknote className="w-8 h-8 mb-2 text-pink-600" />
                   <span className="text-sm font-medium">Add Fee</span>
                 </Button>
@@ -605,7 +605,7 @@ export default async function DashboardPage() {
           {/* My Fees */}
           {studentFees && studentFees.length > 0 && (
             <Card className="hover:shadow-xl transition-shadow">
-              <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50">
+              <CardHeader className="bg-muted/10 border-b">
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center">
                     <Banknote className="w-5 h-5 mr-2 text-orange-600" />
@@ -660,7 +660,7 @@ export default async function DashboardPage() {
 
           {/* Recent Grades */}
           <Card className="hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center">
                   <Award className="w-5 h-5 mr-2 text-purple-600" />
@@ -681,7 +681,7 @@ export default async function DashboardPage() {
                   return (
                     <div
                       key={result.id}
-                      className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200"
+                      className="flex items-center justify-between p-4 rounded-lg bg-muted/20 border border-border"
                     >
                       <div>
                         <p className="font-semibold">{title}</p>
@@ -702,7 +702,7 @@ export default async function DashboardPage() {
 
           {/* Upcoming Events */}
           <Card className="hover:shadow-xl transition-shadow lg:col-span-2">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center">
                 <Calendar className="w-5 h-5 mr-2 text-blue-600" />
                 Upcoming Events
@@ -713,7 +713,7 @@ export default async function DashboardPage() {
                 {recentEvents.slice(0, 4).map((event) => (
                   <div
                     key={event.id}
-                    className="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200"
+                    className="p-4 rounded-lg bg-muted/20 border border-border"
                   >
                     <div className="flex items-start space-x-3">
                       <Calendar className="w-5 h-5 text-blue-500 mt-1" />

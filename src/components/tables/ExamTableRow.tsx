@@ -62,7 +62,7 @@ export function ExamTableRow({ exam, role, userId, lessons }: ExamTableRowProps)
 
   return (
     <>
-      <tr className="border-b hover:bg-gray-50">
+      <tr className="border-b transition-colors hover:bg-muted/50">
         <td className="p-4 font-medium">{exam.title}</td>
         <td className="p-4 text-sm">{exam.lesson.subject.name}</td>
         <td className="p-4 text-sm">{exam.lesson.class.name}</td>
@@ -71,7 +71,7 @@ export function ExamTableRow({ exam, role, userId, lessons }: ExamTableRowProps)
         </td>
         <td className="p-4 text-sm">
           <div>{format(new Date(exam.startTime), "MMM dd, yyyy")}</div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-muted-foreground">
             {format(new Date(exam.startTime), "HH:mm")} - {format(new Date(exam.endTime), "HH:mm")}
           </div>
         </td>

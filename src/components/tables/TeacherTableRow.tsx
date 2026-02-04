@@ -50,7 +50,7 @@ export function TeacherTableRow({ teacher, allSubjects }: TeacherTableRowProps) 
 
   return (
     <>
-      <tr className="border-b hover:bg-gray-50">
+      <tr className="border-b transition-colors hover:bg-muted/50">
         <td className="p-4">
           <div className="flex items-center space-x-3">
             {teacher.img ? (
@@ -72,7 +72,7 @@ export function TeacherTableRow({ teacher, allSubjects }: TeacherTableRowProps) 
             )}
             <div>
               <p className="font-medium">{teacher.name} {teacher.surname}</p>
-              <p className="text-sm text-gray-500">@{teacher.username}</p>
+              <p className="text-sm text-muted-foreground">@{teacher.username}</p>
             </div>
           </div>
         </td>
@@ -84,7 +84,7 @@ export function TeacherTableRow({ teacher, allSubjects }: TeacherTableRowProps) 
               </span>
             ))}
             {teacher.subjects.length > 2 && (
-              <span className="text-xs text-gray-500 px-2 py-1">+{teacher.subjects.length - 2}</span>
+              <span className="text-xs text-muted-foreground px-2 py-1">+{teacher.subjects.length - 2}</span>
             )}
           </div>
         </td>

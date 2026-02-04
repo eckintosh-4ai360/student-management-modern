@@ -273,7 +273,7 @@ export function ImportStudentModal({ open, onOpenChange, parents, classes, grade
                     </thead>
                     <tbody>
                       {preview.map((row, idx) => (
-                        <tr key={idx} className="border-t hover:bg-gray-50">
+                        <tr key={idx} className="border-t hover:bg-muted/50 transition-colors">
                           <td className="px-2 py-2">{row.username}</td>
                           <td className="px-2 py-2">{row.name}</td>
                           <td className="px-2 py-2">{row.surname}</td>

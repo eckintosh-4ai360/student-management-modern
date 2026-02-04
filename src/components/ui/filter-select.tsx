@@ -51,7 +51,7 @@ export function FilterSelect({
       <select
         value={currentValue}
         onChange={(e) => handleFilterChange(e.target.value)}
-        className="pl-10 pr-4 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none cursor-pointer min-w-[150px]"
+        className="pl-10 pr-4 py-2 border border-input rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none cursor-pointer min-w-[150px]"
         disabled={isPending}
       >
         <option value="">{placeholder}</option>

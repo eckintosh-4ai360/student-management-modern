@@ -213,3 +213,14 @@ export const adminSchema = z.object({
 
 export type AdminSchema = z.infer<typeof adminSchema>;
 
+export const timetableSchema = z.object({
+  id: z.number().optional(),
+  title: z.string().min(1, { message: "Title is required!" }),
+  semester: z.string().min(1, { message: "Semester is required!" }),
+  academicYear: z.string().min(1, { message: "Academic Year is required!" }),
+  fileUrl: z.string().min(1, { message: "File URL is required!" }),
+  fileType: z.enum(["PDF", "IMAGE"], { message: "File type is required!" }),
+});
+
+export type TimetableSchema = z.infer<typeof timetableSchema>;
+

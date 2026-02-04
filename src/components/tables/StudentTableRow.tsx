@@ -54,7 +54,7 @@ export function StudentTableRow({ student, grades, classes, parents }: StudentTa
 
   return (
     <>
-      <tr className="border-b hover:bg-gray-50">
+      <tr className="border-b transition-colors hover:bg-muted/50">
         <td className="p-4">
           <div className="flex items-center space-x-3">
             {student.img ? (
@@ -76,11 +76,11 @@ export function StudentTableRow({ student, grades, classes, parents }: StudentTa
             )}
             <div>
               <p className="font-medium">{student.name} {student.surname}</p>
-              <p className="text-sm text-gray-500">@{student.username}</p>
+              <p className="text-sm text-muted-foreground">@{student.username}</p>
             </div>
           </div>
         </td>
-        <td className="p-4 text-sm text-gray-600">{student.id.slice(0, 8)}</td>
+        <td className="p-4 text-sm text-muted-foreground">{student.id.slice(0, 8)}</td>
         <td className="p-4 text-sm">{student.class.name}</td>
         <td className="p-4 text-sm">Grade {student.grade.level}</td>
         <td className="p-4 text-sm">{student.parent?.name} {student.parent?.surname}</td>

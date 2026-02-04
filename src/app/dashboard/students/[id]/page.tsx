@@ -108,7 +108,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
               <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
               Attendance Rate
             </CardTitle>
@@ -121,7 +121,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
 
         <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
               <TrendingUp className="w-4 h-4 mr-2 text-blue-500" />
               Average Score
             </CardTitle>
@@ -134,7 +134,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
 
         <Card className="border-l-4 border-l-orange-500 hover:shadow-lg transition-shadow">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
               <Banknote className="w-4 h-4 mr-2 text-orange-500" />
               Pending Fees
             </CardTitle>
@@ -147,7 +147,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
 
         <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
               <Award className="w-4 h-4 mr-2 text-purple-500" />
               Behavior Score
             </CardTitle>
@@ -167,7 +167,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
         <div className="lg:col-span-1 space-y-6">
           {/* General Information */}
           <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center text-lg">
                 <User className="w-5 h-5 mr-2 text-blue-600" />
                 General Information
@@ -214,7 +214,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
 
           {/* Contact Information */}
           <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-green-50 to-teal-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center text-lg">
                 <Phone className="w-5 h-5 mr-2 text-green-600" />
                 Contact Information
@@ -249,7 +249,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
 
           {/* Family Information */}
           <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-orange-50 to-amber-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center text-lg">
                 <Users className="w-5 h-5 mr-2 text-orange-600" />
                 Family Information
@@ -282,7 +282,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
           {/* Medical Information */}
           {student.medicalInfo && (
             <Card className="hover:shadow-lg transition-shadow border-red-200">
-              <CardHeader className="bg-gradient-to-r from-red-50 to-pink-50">
+            <CardHeader className="bg-muted/10 border-b">
                 <CardTitle className="flex items-center text-lg">
                   <Activity className="w-5 h-5 mr-2 text-red-600" />
                   Medical Information
@@ -325,7 +325,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
         <div className="lg:col-span-2 space-y-6">
           {/* Recent Attendance */}
           <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center text-lg">
                   <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
@@ -371,7 +371,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
 
           {/* Academic Performance */}
           <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center text-lg">
                   <BarChart3 className="w-5 h-5 mr-2 text-purple-600" />
@@ -411,7 +411,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
 
           {/* Fees & Payments */}
           <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center text-lg">
                   <Banknote className="w-5 h-5 mr-2 text-orange-600" />
@@ -471,7 +471,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
 
           {/* Behavior Records */}
           <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center text-lg">
                   <Award className="w-5 h-5 mr-2 text-indigo-600" />
@@ -533,7 +533,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
 
           {/* Comments & Feedback */}
           <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-teal-50 to-cyan-50">
+            <CardHeader className="bg-muted/10 border-b">
               <CardTitle className="flex items-center text-lg">
                 <MessageSquare className="w-5 h-5 mr-2 text-teal-600" />
                 Teacher Comments & Feedback
@@ -544,7 +544,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
                 {student.comments.map((comment) => (
                   <div
                     key={comment.id}
-                    className="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200"
+                    className="p-4 rounded-lg bg-muted/20 border border-border"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center">
@@ -573,7 +573,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
           {/* Documents */}
           {student.documents.length > 0 && (
             <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="bg-gradient-to-r from-gray-50 to-slate-50">
+            <CardHeader className="bg-muted/10 border-b">
                 <CardTitle className="flex items-center text-lg">
                   <FileText className="w-5 h-5 mr-2 text-gray-600" />
                   Documents
@@ -584,7 +584,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
                   {student.documents.map((doc) => (
                     <div
                       key={doc.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors"
+                      className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-border hover:bg-muted/30 transition-colors"
                     >
                       <div className="flex items-center">
                         <FileText className="w-5 h-5 text-blue-600 mr-3" />
@@ -604,7 +604,7 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
       </div>
 
       {/* Quick Actions Footer */}
-      <Card className="bg-gradient-to-r from-gray-50 to-slate-50 border-2 border-dashed border-gray-300">
+      <Card className="bg-muted/20 border-2 border-dashed border-border">
         <CardContent className="pt-6">
           <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -36,7 +36,7 @@ export default async function ResultsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Results</h1>
-        <p className="text-gray-500 mt-1">View all exam and assignment results</p>
+        <p className="text-muted-foreground mt-1">View all exam and assignment results</p>
       </div>
 
       <Card>
@@ -58,7 +58,7 @@ export default async function ResultsPage() {
               </thead>
               <tbody>
                 {results.map((result) => (
-                  <tr key={result.id} className="border-b hover:bg-gray-50">
+                  <tr key={result.id} className="border-b hover:bg-muted/50 transition-colors">
                     <td className="p-4">
                       <div className="font-medium">
                         {result.student.name} {result.student.surname}

@@ -79,7 +79,7 @@ export default async function FeesPage({
           <h1 className="text-3xl font-bold">
             {userRole === "student" ? "My Fees & Bills" : "Fees & Bills"}
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-muted-foreground mt-1">
             {userRole === "student" 
               ? "View your payment information and due dates" 
               : "Manage student fees and payments"}
@@ -93,7 +93,7 @@ export default async function FeesPage({
         <Link href="/dashboard/fees" className="block">
           <Card className={`hover:shadow-md transition-shadow cursor-pointer ${statusFilter === "all" ? "ring-2 ring-blue-500" : ""}`}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Amount</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Amount</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">GH₵{totalAmount.toFixed(2)}</div>
@@ -103,7 +103,7 @@ export default async function FeesPage({
         <Link href="/dashboard/fees?status=PAID" className="block">
           <Card className={`hover:shadow-md transition-shadow cursor-pointer ${statusFilter === "PAID" ? "ring-2 ring-green-500" : ""}`}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Paid Amount</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Paid Amount</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">GH₵{paidAmount.toFixed(2)}</div>
@@ -113,7 +113,7 @@ export default async function FeesPage({
         <Link href="/dashboard/fees?status=PENDING" className="block">
           <Card className={`hover:shadow-md transition-shadow cursor-pointer ${statusFilter === "PENDING" ? "ring-2 ring-orange-500" : ""}`}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Pending Amount</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Pending Amount</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">GH₵{pendingAmount.toFixed(2)}</div>
@@ -123,7 +123,7 @@ export default async function FeesPage({
         <Link href="/dashboard/fees?status=OVERDUE" className="block">
           <Card className={`hover:shadow-md transition-shadow cursor-pointer ${statusFilter === "OVERDUE" ? "ring-2 ring-red-500" : ""}`}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Overdue Amount</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Overdue Amount</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-red-600">GH₵{overdueAmount.toFixed(2)}</div>
@@ -184,12 +184,12 @@ export default async function FeesPage({
               </thead>
               <tbody>
                 {fees.map((fee) => (
-                  <tr key={fee.id} className="border-b hover:bg-gray-50">
+                  <tr key={fee.id} className="border-b hover:bg-muted/50 transition-colors">
                     {userRole !== "student" && (
                       <td className="p-4">
                         <div>
                           <p className="font-medium">{fee.student.name} {fee.student.surname}</p>
-                          <p className="text-sm text-gray-500">{fee.student.class.name}</p>
+                          <p className="text-sm text-muted-foreground">{fee.student.class.name}</p>
                         </div>
                       </td>
                     )}
@@ -197,7 +197,7 @@ export default async function FeesPage({
                       <div>
                         <p className="font-medium">{fee.title}</p>
                         {fee.description && (
-                          <p className="text-xs text-gray-500">{fee.description}</p>
+                          <p className="text-xs text-muted-foreground">{fee.description}</p>
                         )}
                       </div>
                     </td>
@@ -236,13 +236,13 @@ export default async function FeesPage({
 
           {fees.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500">No fees found.</p>
+              <p className="text-muted-foreground">No fees found.</p>
             </div>
           )}
 
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-4">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Page {page} of {totalPages}
               </p>
               <div className="flex items-center space-x-2">

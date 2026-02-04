@@ -43,7 +43,7 @@ export function DialogContent({
   return (
     <div
       className={cn(
-        "bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl",
+        "bg-card text-card-foreground rounded-lg shadow-lg p-6 w-full max-w-2xl border border-border",
         className
       )}
       {...props}
@@ -96,7 +96,7 @@ export function DialogDescription({
   ...props
 }: DialogDescriptionProps) {
   return (
-    <p className={cn("text-gray-600 text-sm mt-1", className)} {...props}>
+    <p className={cn("text-muted-foreground text-sm mt-1", className)} {...props}>
       {children}
     </p>
   );

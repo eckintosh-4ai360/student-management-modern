@@ -99,7 +99,7 @@ export function BehaviorPageClient({
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-bold text-blue-600">{stats.total}</div>
-            <p className="text-xs text-gray-500 mt-1">All behavior entries</p>
+            <p className="text-xs text-muted-foreground mt-1">All behavior entries</p>
           </CardContent>
         </Card>
 
@@ -115,7 +115,7 @@ export function BehaviorPageClient({
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-bold text-green-600">{stats.positive}</div>
-            <p className="text-xs text-gray-500 mt-1">Good behavior</p>
+            <p className="text-xs text-muted-foreground mt-1">Good behavior</p>
           </CardContent>
         </Card>
 
@@ -131,7 +131,7 @@ export function BehaviorPageClient({
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-bold text-red-600">{stats.negative}</div>
-            <p className="text-xs text-gray-500 mt-1">Incidents reported</p>
+            <p className="text-xs text-muted-foreground mt-1">Incidents reported</p>
           </CardContent>
         </Card>
 
@@ -145,8 +145,8 @@ export function BehaviorPageClient({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-gray-600">{stats.neutral}</div>
-            <p className="text-xs text-gray-500 mt-1">General notes</p>
+            <div className="text-4xl font-bold text-muted-foreground">{stats.neutral}</div>
+            <p className="text-xs text-muted-foreground mt-1">General notes</p>
           </CardContent>
         </Card>
 
@@ -159,7 +159,7 @@ export function BehaviorPageClient({
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-bold text-orange-600">{stats.critical}</div>
-            <p className="text-xs text-gray-500 mt-1">Urgent cases</p>
+            <p className="text-xs text-muted-foreground mt-1">Urgent cases</p>
           </CardContent>
         </Card>
       </div>
@@ -196,7 +196,7 @@ export function BehaviorPageClient({
               className={
                 filteredType === "NEGATIVE"
                   ? "bg-red-100 text-red-700 border-red-300"
-                  : "text-red-600 border-red-300 hover:bg-red-50"
+                  : "text-red-600 border-input bg-background"
               }
             >
               Negative ({stats.negative})
@@ -207,8 +207,8 @@ export function BehaviorPageClient({
               onClick={() => setFilteredType("NEUTRAL")}
               className={
                 filteredType === "NEUTRAL"
-                  ? "bg-gray-100 text-gray-700 border-gray-300"
-                  : "text-gray-600 border-gray-300"
+                  ? "bg-muted text-muted-foreground border-border"
+                  : "text-foreground border-border"
               }
             >
               Neutral ({stats.neutral})
@@ -228,7 +228,7 @@ export function BehaviorPageClient({
               <Award className="w-6 h-6 mr-3 text-indigo-600" />
               Behavior Case(s) Open
             </span>
-            <span className="text-sm font-normal text-gray-600">
+            <span className="text-sm font-normal text-muted-foreground">
               {filteredBehaviors.length} Record(s)
             </span>
           </CardTitle>
@@ -238,22 +238,22 @@ export function BehaviorPageClient({
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b-2 border-gray-200">
-                    <th className="text-left p-4 font-semibold text-gray-700">Referral ID</th>
-                    <th className="text-left p-4 font-semibold text-gray-700">Student(s) Involved</th>
-                    <th className="text-left p-4 font-semibold text-gray-700">Date of Incident</th>
-                    <th className="text-left p-4 font-semibold text-gray-700">Incident</th>
-                    <th className="text-left p-4 font-semibold text-gray-700">Type</th>
-                    <th className="text-left p-4 font-semibold text-gray-700">Severity</th>
-                    <th className="text-left p-4 font-semibold text-gray-700">Status</th>
-                    <th className="text-left p-4 font-semibold text-gray-700">Actions</th>
+                  <tr className="bg-muted/50 border-border">
+                    <th className="text-left p-4 font-semibold text-muted-foreground">Referral ID</th>
+                    <th className="text-left p-4 font-semibold text-muted-foreground">Student(s) Involved</th>
+                    <th className="text-left p-4 font-semibold text-muted-foreground">Date of Incident</th>
+                    <th className="text-left p-4 font-semibold text-muted-foreground">Incident</th>
+                    <th className="text-left p-4 font-semibold text-muted-foreground">Type</th>
+                    <th className="text-left p-4 font-semibold text-muted-foreground">Severity</th>
+                    <th className="text-left p-4 font-semibold text-muted-foreground">Status</th>
+                    <th className="text-left p-4 font-semibold text-muted-foreground">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredBehaviors.map((behavior) => (
-                    <tr key={behavior.id} className="border-b hover:bg-gray-50 transition-colors">
+                    <tr key={behavior.id} className="border-b hover:bg-muted/50 transition-colors transition-colors">
                       <td className="p-4">
-                        <span className="font-mono text-sm bg-gray-100 px-3 py-1 rounded">
+                        <span className="font-mono text-sm bg-muted/50 text-muted-foreground">
                           REF{behavior.id}
                         </span>
                       </td>
@@ -270,23 +270,23 @@ export function BehaviorPageClient({
                             >
                               {behavior.student.name} {behavior.student.surname}
                             </Link>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                               {behavior.student.class.name} • Grade{" "}
                               {behavior.student.grade.level}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="p-4 text-sm text-gray-600">
+                      <td className="p-4 text-sm text-muted-foreground">
                         {format(new Date(behavior.date), "MMM dd, yyyy")}
                       </td>
                       <td className="p-4">
                         <div>
                           <p className="font-medium">{behavior.title}</p>
-                          <p className="text-sm text-gray-600 line-clamp-1">
+                          <p className="text-sm text-muted-foreground line-clamp-1">
                             {behavior.description}
                           </p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-muted-foreground mt-1">
                             Reported by: {behavior.reportedBy}
                           </p>
                         </div>
@@ -298,7 +298,7 @@ export function BehaviorPageClient({
                               ? "bg-green-100 text-green-700"
                               : behavior.type === "NEGATIVE"
                               ? "bg-red-100 text-red-700"
-                              : "bg-gray-100 text-gray-700"
+                              : "bg-gray-100 text-muted-foreground"
                           }`}
                         >
                           {behavior.type === "POSITIVE" && (
@@ -340,8 +340,8 @@ export function BehaviorPageClient({
             </div>
           ) : (
             <div className="text-center py-16">
-              <Award className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">No behavior records found</p>
+              <Award className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground text-lg">No behavior records found</p>
               <p className="text-gray-400 text-sm mt-2">
                 Start tracking student conduct and achievements
               </p>
@@ -378,15 +378,15 @@ export function BehaviorPageClient({
                           <span className="font-semibold">
                             {behavior.student.name} {behavior.student.surname}
                           </span>
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-muted-foreground">
                             • {behavior.title}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-700 mb-2">
+                        <p className="text-sm text-muted-foreground mb-2">
                           <span className="font-semibold">Action Taken:</span>{" "}
                           {behavior.actionTaken}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           {format(new Date(behavior.date), "MMM dd, yyyy")} • By{" "}
                           {behavior.reportedBy}
                         </p>

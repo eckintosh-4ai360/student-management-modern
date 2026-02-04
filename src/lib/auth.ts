@@ -2,6 +2,8 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import prisma from "./prisma";
+import { logActivity } from "./logger";
+import { headers } from "next/headers";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -32,11 +34,11 @@ export const authOptions: NextAuthOptions = {
             username: admin.username,
             name: admin.name,
             role: "admin",
-            adminRole: admin.role, // SUPER_ADMIN or ADMIN
+            adminRole: admin.role,
           };
         }
 
-        // Check in Teacher table (username or staffId)
+        // Check in Teacher table
         const teacher = await prisma.teacher.findFirst({
           where: {
             OR: [
@@ -55,7 +57,7 @@ export const authOptions: NextAuthOptions = {
           };
         }
 
-        // Check in Student table (username or studentId)
+        // Check in Student table
         const student = await prisma.student.findFirst({
           where: {
             OR: [
@@ -114,10 +116,27 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
+  events: {
+    async signIn({ user }) {
+      try {
+        const headersList = await headers();
+        const ip = headersList.get("x-forwarded-for")?.split(',')[0] || "unknown";
+        
+        await logActivity({
+          userId: user.id as string,
+          userName: user.name as string,
+          role: (user as any).role || "unknown",
+          action: "Login",
+          ipAddress: ip,
+        });
+      } catch (error) {
+        console.error("Error logging sign-in event:", error);
+      }
+    },
+  },
   session: {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  basePath: "/api/auth",
 };
 

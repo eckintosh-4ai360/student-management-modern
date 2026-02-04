@@ -198,7 +198,7 @@ export default async function ClassDetailsPage({
                   </tr>
                 ) : (
                   classData.students.map((student) => (
-                    <tr key={student.id} className="border-b hover:bg-gray-50 transition-colors">
+                    <tr key={student.id} className="border-b hover:bg-muted/50 transition-colors transition-colors">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white overflow-hidden">
@@ -271,7 +271,7 @@ export default async function ClassDetailsPage({
                   </tr>
                 ) : (
                   classData.lessons.map((lesson) => (
-                    <tr key={lesson.id} className="border-b hover:bg-gray-50 transition-colors">
+                    <tr key={lesson.id} className="border-b hover:bg-muted/50 transition-colors transition-colors">
                       <td className="py-3 px-4 font-medium">{lesson.name}</td>
                       <td className="py-3 px-4 text-sm text-gray-600">{lesson.subject.name}</td>
                       <td className="py-3 px-4 text-sm text-gray-600">

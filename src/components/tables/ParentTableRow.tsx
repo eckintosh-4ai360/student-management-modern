@@ -50,7 +50,7 @@ export function ParentTableRow({ parent }: ParentTableRowProps) {
 
   return (
     <>
-      <tr className="border-b hover:bg-gray-50">
+      <tr className="border-b transition-colors hover:bg-muted/50">
         <td className="p-4">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
@@ -60,13 +60,13 @@ export function ParentTableRow({ parent }: ParentTableRowProps) {
             </div>
             <div>
               <p className="font-medium">{parent.name} {parent.surname}</p>
-              <p className="text-sm text-gray-500">@{parent.username}</p>
+              <p className="text-sm text-muted-foreground">@{parent.username}</p>
             </div>
           </div>
         </td>
-        <td className="p-4 text-sm text-gray-600">{parent.email || "-"}</td>
+        <td className="p-4 text-sm text-muted-foreground">{parent.email || "-"}</td>
         <td className="p-4 text-sm">{parent.phone}</td>
-        <td className="p-4 text-sm text-gray-600 max-w-xs truncate">{parent.address}</td>
+        <td className="p-4 text-sm text-muted-foreground max-w-xs truncate">{parent.address}</td>
         <td className="p-4">
           <div className="flex items-center gap-1 text-sm">
             <Users className="w-4 h-4 text-gray-500" />
