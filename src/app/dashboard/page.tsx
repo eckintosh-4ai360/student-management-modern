@@ -187,7 +187,7 @@ export default async function DashboardPage() {
           <Link href="/dashboard/students">
             <Card className="border-l-4 border-l-blue-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Students
               </CardTitle>
               <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl shadow-lg">
@@ -196,7 +196,7 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold text-blue-600">{totalStudents}</div>
-              <p className="text-xs text-gray-500 mt-2 flex items-center">
+              <p className="text-xs text-muted-foreground mt-2 flex items-center">
                 <TrendingUp className="w-3 h-3 mr-1 text-green-500" />
                 Active enrollments
               </p>
@@ -207,7 +207,7 @@ export default async function DashboardPage() {
           <Link href="/dashboard/teachers">
             <Card className="border-l-4 border-l-green-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Staff
               </CardTitle>
               <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-xl shadow-lg">
@@ -216,7 +216,7 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold text-green-600">{totalTeachers}</div>
-              <p className="text-xs text-gray-500 mt-2 flex items-center">
+              <p className="text-xs text-muted-foreground mt-2 flex items-center">
                 <UserCheck className="w-3 h-3 mr-1 text-green-500" />
                 Teaching staff
               </p>
@@ -227,7 +227,7 @@ export default async function DashboardPage() {
           <Link href="/dashboard/parents">
             <Card className="border-l-4 border-l-purple-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Parents
               </CardTitle>
               <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl shadow-lg">
@@ -236,7 +236,7 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold text-purple-600">{totalParents}</div>
-              <p className="text-xs text-gray-500 mt-2 flex items-center">
+              <p className="text-xs text-muted-foreground mt-2 flex items-center">
                 <Users className="w-3 h-3 mr-1 text-purple-500" />
                 Registered parents
               </p>
@@ -247,7 +247,7 @@ export default async function DashboardPage() {
           <Link href="/dashboard/attendance">
             <Card className="border-l-4 border-l-orange-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Attendance This Week
               </CardTitle>
               <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-3 rounded-xl shadow-lg">
@@ -256,7 +256,7 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold text-orange-600">{attendanceRate.toFixed(1)}%</div>
-              <p className="text-xs text-gray-500 mt-2 flex items-center">
+              <p className="text-xs text-muted-foreground mt-2 flex items-center">
                 <TrendingUp className="w-3 h-3 mr-1 text-green-500" />
                 Present this week
               </p>
@@ -269,7 +269,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Students by Gender Chart */}
           <Card className="hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
+            <CardHeader className="bg-gradient-to-r from-blue-50/10 to-purple-50/10">
               <CardTitle className="flex items-center">
                 <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
                 Students by Gender
@@ -305,21 +305,21 @@ export default async function DashboardPage() {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
                       <div className="text-3xl font-bold">{totalStudents}</div>
-                      <div className="text-sm text-gray-500">Total</div>
+                      <div className="text-sm text-muted-foreground">Total</div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4 mt-6">
-                <div className="flex items-center justify-center p-4 bg-blue-50 rounded-lg">
-                  <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                <div className="flex items-center justify-center p-4 bg-primary/10 rounded-lg">
+                  <div className="w-4 h-4 bg-muted/300 rounded-full mr-2"></div>
                   <div>
                     <p className="text-sm font-semibold">Male</p>
                     <p className="text-2xl font-bold text-blue-600">{maleCount}</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-center p-4 bg-pink-50 rounded-lg">
-                  <div className="w-4 h-4 bg-pink-500 rounded-full mr-2"></div>
+                <div className="flex items-center justify-center p-4 bg-accent/10 rounded-lg">
+                  <div className="w-4 h-4 bg-muted/300 rounded-full mr-2"></div>
                   <div>
                     <p className="text-sm font-semibold">Female</p>
                     <p className="text-2xl font-bold text-pink-600">{femaleCount}</p>
@@ -331,7 +331,7 @@ export default async function DashboardPage() {
 
           {/* Class Enrollment Chart */}
           <Card className="hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50">
+            <CardHeader className="bg-gradient-to-r from-purple-50/10 to-indigo-50/10">
               <CardTitle className="flex items-center">
                 <BarChart3 className="w-5 h-5 mr-2 text-purple-600" />
                 Enrollment Breakdown
@@ -344,11 +344,11 @@ export default async function DashboardPage() {
               <div className="mt-6 pt-4 border-t">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 rounded-lg">
-                    <p className="text-xs text-gray-600 font-medium">Total Classes</p>
+                    <p className="text-xs text-muted-foreground font-medium">Total Classes</p>
                     <p className="text-2xl font-bold text-purple-600 mt-1">{classesEnrollment.length}</p>
                   </div>
-                  <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 rounded-lg">
-                    <p className="text-xs text-gray-600 font-medium">Total Enrolled</p>
+                  <div className="bg-gradient-to-br from-purple-50/10 to-indigo-50/10 p-4 rounded-lg">
+                    <p className="text-xs text-muted-foreground font-medium">Total Enrolled</p>
                     <p className="text-2xl font-bold text-indigo-600 mt-1">{totalStudents}</p>
                   </div>
                 </div>
@@ -361,7 +361,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Announcements */}
           <Card className="hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-yellow-50 to-orange-50">
+            <CardHeader className="bg-gradient-to-r from-yellow-50/10 to-orange-50/10">
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center">
                   <MessageSquare className="w-5 h-5 mr-2 text-yellow-600" />
@@ -377,15 +377,15 @@ export default async function DashboardPage() {
                 {recentAnnouncements.slice(0, 4).map((announcement) => (
                   <div
                     key={announcement.id}
-                    className="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 hover:shadow-md transition-shadow"
+                    className="p-4 rounded-lg bg-gradient-to-r from-blue-50/10 to-cyan-50/10 border border-border hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <h4 className="font-semibold text-lg">{announcement.title}</h4>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         {format(new Date(announcement.date), "MMM dd")}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 line-clamp-2">{announcement.description}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{announcement.description}</p>
                     {announcement.class && (
                       <span className="inline-block mt-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
                         {announcement.class.name}
@@ -394,7 +394,7 @@ export default async function DashboardPage() {
                   </div>
                 ))}
                 {recentAnnouncements.length === 0 && (
-                  <p className="text-gray-500 text-center py-8">No announcements yet</p>
+                  <p className="text-muted-foreground text-center py-8">No announcements yet</p>
                 )}
               </div>
             </CardContent>
@@ -431,10 +431,10 @@ export default async function DashboardPage() {
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-lg">{event.title}</h4>
-                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">{event.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{event.description}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <Clock className="w-3 h-3 text-gray-400" />
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-muted-foreground">
                             {format(new Date(event.startTime), "h:mm a")} -{" "}
                             {format(new Date(event.endTime), "h:mm a")}
                           </span>
@@ -444,7 +444,7 @@ export default async function DashboardPage() {
                   </div>
                 ))}
                 {recentEvents.length === 0 && (
-                  <p className="text-gray-500 text-center py-8">No upcoming events</p>
+                  <p className="text-muted-foreground text-center py-8">No upcoming events</p>
                 )}
               </div>
             </CardContent>
@@ -457,7 +457,7 @@ export default async function DashboardPage() {
             <h3 className="text-xl font-bold mb-6 text-center">Quick Actions</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               <Link href="/dashboard/students">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-blue-50 hover:border-blue-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-blue-300 transition-all">
                   <GraduationCap className="w-8 h-8 mb-2 text-blue-600" />
                   <span className="text-sm font-medium">Add Student</span>
                 </Button>
@@ -469,25 +469,25 @@ export default async function DashboardPage() {
                 </Button>
               </Link>
               <Link href="/dashboard/classes">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-purple-50 hover:border-purple-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-purple-300 transition-all">
                   <BookOpen className="w-8 h-8 mb-2 text-purple-600" />
                   <span className="text-sm font-medium">Add Class</span>
                 </Button>
               </Link>
               <Link href="/dashboard/events">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-orange-50 hover:border-orange-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-orange-300 transition-all">
                   <Calendar className="w-8 h-8 mb-2 text-orange-600" />
                   <span className="text-sm font-medium">Add Event</span>
                 </Button>
               </Link>
               <Link href="/dashboard/announcements">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-yellow-50 hover:border-yellow-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-yellow-300 transition-all">
                   <MessageSquare className="w-8 h-8 mb-2 text-yellow-600" />
                   <span className="text-sm font-medium">Add Notice</span>
                 </Button>
               </Link>
               <Link href="/dashboard/fees">
-                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-pink-50 hover:border-pink-300 transition-all">
+                <Button variant="outline" className="h-24 w-full flex flex-col items-center justify-center hover:bg-muted/30 hover:border-pink-300 transition-all">
                   <Banknote className="w-8 h-8 mb-2 text-pink-600" />
                   <span className="text-sm font-medium">Add Fee</span>
                 </Button>
@@ -546,41 +546,41 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="border-l-4 border-l-green-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                 <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
                 Attendance Rate
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold text-green-600">{studentAttendanceRate.toFixed(1)}%</div>
-              <p className="text-xs text-gray-500 mt-1">{studentData.attendances.filter(a => a.present).length} of {studentData.attendances.length}</p>
+              <p className="text-xs text-muted-foreground mt-1">{studentData.attendances.filter(a => a.present).length} of {studentData.attendances.length}</p>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-blue-500 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                 <TrendingUp className="w-4 h-4 mr-2 text-blue-500" />
                 Average Score
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold text-blue-600">{averageScore.toFixed(1)}%</div>
-              <p className="text-xs text-gray-500 mt-1">{studentData.results.length} assessments</p>
+              <p className="text-xs text-muted-foreground mt-1">{studentData.results.length} assessments</p>
             </CardContent>
           </Card>
 
           <Link href="/dashboard/fees?status=PENDING" className="block">
             <Card className="border-l-4 border-l-orange-500 hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                   <AlertCircle className="w-4 h-4 mr-2 text-orange-500" />
                   Pending Payments
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-bold text-orange-600">{feeStats?.pending} Bills</div>
-                <p className="text-xs text-gray-500 mt-1">${(feeStats?.total || 0).toFixed(2)} total</p>
+                <p className="text-xs text-muted-foreground mt-1">${(feeStats?.total || 0).toFixed(2)} total</p>
               </CardContent>
             </Card>
           </Link>
@@ -588,14 +588,14 @@ export default async function DashboardPage() {
           <Link href="/dashboard/fees?status=OVERDUE" className="block">
             <Card className="border-l-4 border-l-red-500 hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                   <AlertCircle className="w-4 h-4 mr-2 text-red-500" />
                   Overdue
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-bold text-red-600">{feeStats?.overdue} Bills</div>
-                <p className="text-xs text-gray-500 mt-1">Requires attention</p>
+                <p className="text-xs text-muted-foreground mt-1">Requires attention</p>
               </CardContent>
             </Card>
           </Link>
@@ -626,13 +626,13 @@ export default async function DashboardPage() {
                           ? "bg-green-50 border-green-200"
                           : fee.status === "OVERDUE"
                           ? "bg-red-50 border-red-200"
-                          : "bg-orange-50 border-orange-200"
+                          : "bg-muted/30 border-orange-200"
                       }`}
                     >
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-semibold">{fee.title}</p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             Due: {format(new Date(fee.dueDate), "MMM dd, yyyy")}
                           </p>
                         </div>
@@ -685,7 +685,7 @@ export default async function DashboardPage() {
                     >
                       <div>
                         <p className="font-semibold">{title}</p>
-                        <p className="text-sm text-gray-600">{subjectName}</p>
+                        <p className="text-sm text-muted-foreground">{subjectName}</p>
                       </div>
                       <div className={`text-2xl font-bold ${scoreColor}`}>
                         {result.score}%
@@ -694,7 +694,7 @@ export default async function DashboardPage() {
                   );
                 })}
                 {studentData.results.length === 0 && (
-                  <p className="text-gray-500 text-center py-8">No grades yet</p>
+                  <p className="text-muted-foreground text-center py-8">No grades yet</p>
                 )}
               </div>
             </CardContent>
@@ -719,8 +719,8 @@ export default async function DashboardPage() {
                       <Calendar className="w-5 h-5 text-blue-500 mt-1" />
                       <div>
                         <p className="font-medium">{event.title}</p>
-                        <p className="text-sm text-gray-600 mt-1">{event.description}</p>
-                        <p className="text-xs text-gray-500 mt-2">
+                        <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
+                        <p className="text-xs text-muted-foreground mt-2">
                           {format(new Date(event.startTime), "MMM dd, h:mm a")}
                         </p>
                       </div>
@@ -728,7 +728,7 @@ export default async function DashboardPage() {
                   </div>
                 ))}
                 {recentEvents.length === 0 && (
-                  <p className="text-gray-500 text-center py-8 col-span-2">No upcoming events</p>
+                  <p className="text-muted-foreground text-center py-8 col-span-2">No upcoming events</p>
                 )}
               </div>
             </CardContent>
@@ -742,7 +742,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Welcome back, {session?.user?.name}!</h1>
-      <p className="text-gray-500">Your dashboard is loading...</p>
+      <p className="text-muted-foreground">Your dashboard is loading...</p>
     </div>
   );
 }

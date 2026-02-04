@@ -61,7 +61,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-3 sm:p-4 md:p-6">
+    <div className="min-h-screen flex items-center justify-center bg-background p-3 sm:p-4 md:p-6">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="space-y-1 pb-4">
           <img 
@@ -69,7 +69,7 @@ export default function LoginPage() {
             alt="logo" 
             className="w-12 h-12 sm:w-14 sm:h-14 mx-auto my-3 sm:my-4" 
           />
-          <CardTitle className="text-2xl sm:text-3xl font-bold text-center text-gray-800">
+          <CardTitle className="text-2xl sm:text-3xl font-bold text-center text-foreground">
             {schoolName}
           </CardTitle>
           <CardDescription className="text-center text-sm sm:text-base">
@@ -79,7 +79,7 @@ export default function LoginPage() {
         <CardContent className="pb-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="username" className="text-sm font-medium text-gray-700">
+              <label htmlFor="username" className="text-sm font-medium text-foreground">
                 Username, Staff ID, or Student ID
               </label>
               <Input
@@ -95,7 +95,7 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="text-sm font-medium text-foreground">
                   Password
                 </label>
                 <Link 
@@ -138,10 +138,10 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <p className="text-xs font-semibold text-gray-700 mb-2 text-center">Demo Credentials:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
-              <div className="bg-white p-2 rounded border">
+          <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
+            <p className="text-xs font-semibold text-foreground mb-2 text-center">Demo Credentials:</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+              <div className="bg-card p-2 rounded border border-border">
                 <p className="font-medium">Super Admin</p>
                 <p>superadmin / admin123</p>
                 <p className="text-[10px] text-gray-500">ID: STAFF-SA-001</p>

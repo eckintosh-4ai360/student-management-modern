@@ -288,7 +288,7 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 h-screen bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out ${
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 h-screen bg-card border-r border-border flex flex-col transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
@@ -314,10 +314,10 @@ export default function Sidebar() {
           {/* Close button for mobile */}
           <button
             onClick={close}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
             aria-label="Close sidebar"
           >
-            <X className="w-5 h-5 text-gray-600" />
+            <X className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
 
@@ -332,7 +332,7 @@ export default function Sidebar() {
                   {!isDashboard && (
                     <button
                       onClick={() => toggleCategory(category.title)}
-                      className="flex items-center justify-between w-full px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                      className="flex items-center justify-between w-full px-3 py-2 text-sm font-semibold text-foreground hover:bg-muted rounded-lg transition-colors"
                     >
                       <div className="flex items-center gap-2">
                         {category.icon && <category.icon className="w-4 h-4" />}
@@ -361,7 +361,7 @@ export default function Sidebar() {
                                 }
                               }}
                               className={`flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors ${
-                                isActive ? "text-white" : "hover:bg-gray-100"
+                                isActive ? "text-white" : "hover:bg-muted"
                               }`}
                               style={
                                 isActive
@@ -391,12 +391,12 @@ export default function Sidebar() {
           </ul>
         </nav>
 
-        <div className="p-4 border-t">
-          <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium">
+        <div className="p-4 border-t border-border">
+          <div className="mb-4 p-3 bg-muted rounded-lg">
+            <p className="text-sm font-medium text-foreground">
               {userData ? (userRole === "admin" ? userData.name : `${userData.name} ${userData.surname}`) : (session?.user?.name)}
             </p>
-            <p className="text-xs text-gray-500 capitalize">{userRole}</p>
+            <p className="text-xs text-muted-foreground capitalize">{userRole}</p>
           </div>
           <Button
             onClick={() => signOut({ callbackUrl: "/login" })}

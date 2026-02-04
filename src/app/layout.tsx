@@ -41,17 +41,18 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const settings = await getSystemSettings();
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <ThemeProvider />
-      </head>
       <body className={inter.className} suppressHydrationWarning>
-        <SessionProvider>
-          {children}
-          <div id="datepicker-portal" className="relative z-[9999]" />
-          <ToastContainer position="top-right" autoClose={3000} />
-        </SessionProvider>
+        <ThemeProvider settings={settings}>
+          <SessionProvider>
+            {children}
+            <div id="datepicker-portal" className="relative z-[9999]" />
+            <ToastContainer position="top-right" autoClose={3000} />
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

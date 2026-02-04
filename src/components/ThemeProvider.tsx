@@ -1,9 +1,22 @@
-import { getSystemSettings } from "@/lib/settings";
+"use client";
 
-export async function ThemeProvider() {
-  const settings = await getSystemSettings();
+import * as React from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-  const css = `
+export function ThemeProvider({ 
+  children,
+  settings 
+}: { 
+  children: React.ReactNode;
+  settings: any;
+}) {
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const css = React.useMemo(() => `
     :root {
       --primary: ${settings.primaryColor};
       --secondary: ${settings.secondaryColor};
@@ -96,14 +109,21 @@ export async function ThemeProvider() {
     .hover\\:text-blue-800:hover {
       color: ${settings.primaryColor} !important;
     }
-  `;
+  `, [settings]);
 
   return (
-    <style 
-      id="theme-styles" 
-      suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: css }} 
-    />
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <style 
+        id="theme-styles" 
+        dangerouslySetInnerHTML={{ __html: css }} 
+      />
+      {children}
+    </NextThemesProvider>
   );
 }
 

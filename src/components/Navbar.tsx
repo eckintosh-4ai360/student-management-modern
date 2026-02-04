@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { EditProfileModal } from "./forms/EditProfileModal";
 import { useSidebar } from "@/contexts/SidebarContext";
 import Image from "next/image";
+import { ModeToggle } from "./ModeToggle";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -84,15 +85,15 @@ export default function Navbar() {
   }, [showUserMenu]);
 
   return (
-    <header className="h-16 border-b border-gray-200 bg-white flex items-center justify-between px-3 md:px-6 sticky top-0 z-30">
+    <header className="h-16 border-b border-border bg-background flex items-center justify-between px-3 md:px-6 sticky top-0 z-30">
       <div className="flex items-center space-x-4 flex-1">
         {/* Hamburger Menu Button */}
         <button
           onClick={toggle}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden"
+          className="p-2 hover:bg-muted rounded-lg transition-colors lg:hidden"
           aria-label="Toggle sidebar"
         >
-          <Menu className="w-6 h-6 text-gray-700" />
+          <Menu className="w-6 h-6 text-foreground" />
         </button>
 
         <div className="relative flex-1 max-w-md hidden sm:block">
@@ -106,10 +107,11 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center space-x-4">
+        <ModeToggle />
         {/* Notification Bell */}
         <button 
           onClick={handleNotificationClick}
-          className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+          className="relative p-2 text-foreground hover:bg-muted rounded-full transition-colors"
           aria-label={`Notifications ${unreadCount > 0 ? `(${unreadCount} unread)` : ""}`}
         >
           <Bell className="w-6 h-6" />
@@ -130,7 +132,7 @@ export default function Navbar() {
               e.stopPropagation();
               setShowUserMenu(!showUserMenu);
             }}
-            className="flex items-center space-x-3 hover:bg-gray-100 rounded-lg p-2 transition-colors"
+            className="flex items-center space-x-3 hover:bg-muted rounded-lg p-2 transition-colors"
           >
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold shadow-md overflow-hidden">
               {userData?.img ? (
@@ -146,10 +148,10 @@ export default function Navbar() {
               )}
             </div>
             <div className="md:block hidden text-left">
-              <p className="text-sm font-semibold text-gray-900 line-clamp-1">
+              <p className="text-sm font-semibold text-foreground line-clamp-1">
                 {userData ? (userData.userType === "ADMIN" ? userData.name : `${userData.name} ${userData.surname}`) : session?.user?.name}
               </p>
-              <p className="text-xs text-gray-500 capitalize">
+              <p className="text-xs text-muted-foreground capitalize">
                 {(session?.user as any)?.role || "User"}
               </p>
             </div>
@@ -158,21 +160,21 @@ export default function Navbar() {
 
           {/* Dropdown Menu */}
           {showUserMenu && (
-            <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-              <div className="px-4 py-3 border-b border-gray-100">
-                <p className="text-sm font-semibold text-gray-900">
+            <div className="absolute right-0 mt-2 w-56 bg-card rounded-lg shadow-lg border border-border py-2 z-50">
+              <div className="px-4 py-3 border-b border-border">
+                <p className="text-sm font-semibold text-foreground">
                   {session?.user?.name}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   @{(session?.user as any)?.username}
                 </p>
               </div>
 
               <button
                 onClick={handleEditProfile}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted flex items-center"
               >
-                <User className="w-4 h-4 mr-3 text-gray-500" />
+                <User className="w-4 h-4 mr-3 text-muted-foreground" />
                 Edit Profile
               </button>
 
@@ -181,13 +183,13 @@ export default function Navbar() {
                   setShowUserMenu(false);
                   router.push("/dashboard/settings");
                 }}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted flex items-center"
               >
-                <Settings className="w-4 h-4 mr-3 text-gray-500" />
+                <Settings className="w-4 h-4 mr-3 text-muted-foreground" />
                 Settings
               </button>
 
-              <div className="border-t border-gray-100 my-2"></div>
+              <div className="border-t border-border my-2"></div>
 
               <button
                 onClick={handleSignOut}
