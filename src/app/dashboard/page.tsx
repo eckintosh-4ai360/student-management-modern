@@ -1,11 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { 
   Users, GraduationCap, BookOpen, Calendar, DollarSign, AlertCircle, 
   TrendingUp, CheckCircle, XCircle, Award, MessageSquare, FileText,
   Activity, BarChart3, UserCheck, Clock,
-  Banknote
+  Banknote, ArrowRight, User
 } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, subDays } from "date-fns";
@@ -15,6 +15,9 @@ import { redirect } from "next/navigation";
 import { getSystemSettings } from "@/lib/settings";
 import EnrollmentChart from "@/components/EnrollmentChart";
 import { RefreshButton } from "@/components/RefreshButton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import PerformanceChart from "@/components/PerformanceChart";
 
 export default async function DashboardPage() {
   let session;
@@ -143,6 +146,42 @@ export default async function DashboardPage() {
       },
     });
     studentFees = studentData?.fees || [];
+  }
+
+  // Fetch parent data if user is a parent
+  let parentData = null;
+  if (userRole === "parent" && username) {
+    parentData = await prisma.parent.findUnique({
+      where: { username },
+      include: {
+        students: {
+          include: {
+            class: true,
+            grade: true,
+            fees: {
+              orderBy: { dueDate: "asc" },
+              where: { status: { in: ["PENDING", "OVERDUE"] } }
+            },
+            attendances: {
+              orderBy: { date: "desc" },
+              take: 5,
+            },
+            results: {
+               include: {
+                exam: { include: { lesson: { include: { subject: true } } } },
+                assignment: { include: { lesson: { include: { subject: true } } } },
+               },
+               orderBy: { id: "desc" },
+               take: 3
+            },
+            behaviors: {
+              orderBy: { date: "desc" },
+              take: 3
+            }
+          }
+        }
+      }
+    });
   }
 
   // Admin/Teacher Dashboard
@@ -734,6 +773,226 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+      </div>
+    );
+  }
+
+  // Parent Dashboard
+  if (userRole === "parent" && parentData) {
+    return (
+      <div className="space-y-6 pb-12">
+        {/* Welcome Header */}
+        <div 
+          className="rounded-2xl p-6 md:p-8 shadow-sm text-white"
+          style={{
+            background: `linear-gradient(to right, ${systemSettings.primaryColor}, ${systemSettings.secondaryColor})`
+          }}
+        >
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                Hello, {session?.user?.name}
+              </h1>
+              <p className="text-white/90 font-medium">Monitoring your children's progress today.</p>
+            </div>
+            <div className="flex gap-2">
+              <RefreshButton />
+              <Link href="/dashboard/messages">
+                <Button variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white rounded-xl">
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Messages
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Children Management section */}
+        {parentData.students.length > 0 ? (
+          <div className="space-y-6">
+            <Tabs defaultValue={parentData.students[0].id} className="w-full">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
+                <h2 className="text-xl font-bold">Students</h2>
+                <TabsList className="bg-muted h-auto p-1 rounded-xl">
+                  {parentData.students.map((student) => (
+                    <TabsTrigger 
+                      key={student.id} 
+                      value={student.id}
+                      className="px-4 py-2 text-sm font-semibold rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                    >
+                      {student.name}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+
+              {parentData.students.map((student) => {
+                const attendanceRate = student.attendances.length > 0 
+                  ? (student.attendances.filter(a => a.present).length / student.attendances.length) * 100 
+                  : 0;
+                
+                const avgScore = student.results.length > 0
+                  ? student.results.reduce((acc, r) => acc + r.score, 0) / student.results.length
+                  : 0;
+
+                const pendingFeesAmount = student.fees.reduce((sum, fee) => sum + fee.amount, 0);
+
+                const chartData = student.results.slice().reverse().map(r => ({
+                  name: r.exam?.lesson.subject.name || r.assignment?.lesson.subject.name || "Subject",
+                  score: r.score,
+                  fullMark: 100
+                }));
+
+                return (
+                  <TabsContent key={student.id} value={student.id} className="space-y-6 animate-in fade-in duration-300 outline-none">
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <Card className="p-4 border shadow-sm">
+                        <div className="flex items-center gap-3 mb-2">
+                          <GraduationCap className="h-5 w-5 text-primary" />
+                          <span className="text-sm font-medium text-muted-foreground">Class</span>
+                        </div>
+                        <div className="text-2xl font-bold">{student.class.name}</div>
+                        <p className="text-xs text-muted-foreground">Grade {student.grade.level}</p>
+                      </Card>
+
+                      <Card className="p-4 border shadow-sm">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Activity className="h-5 w-5 text-green-600" />
+                          <span className="text-sm font-medium text-muted-foreground">Attendance</span>
+                        </div>
+                        <div className="text-2xl font-bold text-green-600">{attendanceRate.toFixed(1)}%</div>
+                        <p className="text-xs text-muted-foreground">{student.attendances.filter(a => a.present).length} Days Present</p>
+                      </Card>
+
+                      <Card className="p-4 border shadow-sm">
+                        <div className="flex items-center gap-3 mb-2">
+                          <TrendingUp className="h-5 w-5 text-purple-600" />
+                          <span className="text-sm font-medium text-muted-foreground">Avg. Performance</span>
+                        </div>
+                        <div className="text-2xl font-bold text-purple-600">{avgScore.toFixed(1)}%</div>
+                        <p className="text-xs text-muted-foreground">Overall Score</p>
+                      </Card>
+
+                      <Card className={`p-4 border shadow-sm ${pendingFeesAmount > 0 ? "bg-red-50/50" : ""}`}>
+                        <div className="flex items-center gap-3 mb-2">
+                          <Banknote className={`h-5 w-5 ${pendingFeesAmount > 0 ? "text-red-600" : "text-orange-600"}`} />
+                          <span className="text-sm font-medium text-muted-foreground">Fees Due</span>
+                        </div>
+                        <div className={`text-2xl font-bold ${pendingFeesAmount > 0 ? "text-red-600" : ""}`}>
+                          GH₵{pendingFeesAmount.toLocaleString()}
+                        </div>
+                        <p className="text-xs text-muted-foreground">{pendingFeesAmount > 0 ? "Outstanding" : "All Paid"}</p>
+                      </Card>
+                    </div>
+
+                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                      <div className="xl:col-span-2 space-y-6">
+                        <Card className="p-6 border shadow-sm">
+                          <CardHeader className="p-0 mb-6">
+                            <CardTitle className="text-lg font-bold">Performance History</CardTitle>
+                          </CardHeader>
+                          <CardContent className="p-0">
+                            {chartData.length > 0 ? (
+                              <PerformanceChart data={chartData} />
+                            ) : (
+                              <div className="h-[250px] flex items-center justify-center text-muted-foreground italic text-sm">
+                                No performance data available
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-bold">Recent Results</h3>
+                            <Link href={`/dashboard/results?studentId=${student.id}`} className="text-sm text-primary hover:underline font-medium">
+                              View All
+                            </Link>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {student.results.length > 0 ? (
+                              student.results.map((result) => (
+                                <div key={result.id} className="p-4 bg-white rounded-xl border flex items-center justify-between">
+                                  <div>
+                                    <h4 className="font-bold text-sm">{result.exam?.title || result.assignment?.title}</h4>
+                                    <p className="text-xs text-muted-foreground">
+                                      {result.exam?.lesson.subject.name || result.assignment?.lesson.subject.name}
+                                    </p>
+                                  </div>
+                                  <div className={`text-lg font-bold ${
+                                    result.score >= 70 ? "text-green-600" : result.score >= 50 ? "text-orange-600" : "text-red-600"
+                                  }`}>
+                                    {result.score}%
+                                  </div>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No recent results</div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-6">
+                        <Card className="p-6 border shadow-sm">
+                          <CardHeader className="p-0 mb-4">
+                            <CardTitle className="text-lg font-bold">Attendance Log</CardTitle>
+                          </CardHeader>
+                          <CardContent className="p-0 space-y-3">
+                            {student.attendances.map((record) => (
+                              <div key={record.id} className="flex items-center justify-between text-sm py-1 border-b last:border-0">
+                                <span className="font-medium">{format(new Date(record.date), "MMM d, yyyy")}</span>
+                                <Badge variant={record.present ? "outline" : "destructive"} className="text-[10px] px-1.5 h-5">
+                                  {record.present ? "Present" : "Absent"}
+                                </Badge>
+                              </div>
+                            ))}
+                            {student.attendances.length === 0 && (
+                               <div className="text-center text-muted-foreground text-sm py-4 italic">No recent attendance</div>
+                            )}
+                          </CardContent>
+                        </Card>
+
+                        <Card className="p-6 border shadow-sm">
+                          <CardHeader className="p-0 mb-4">
+                            <CardTitle className="text-lg font-bold">Conduct & Behavior</CardTitle>
+                          </CardHeader>
+                          <CardContent className="p-0 space-y-4">
+                             {student.behaviors.map((bx) => (
+                               <div key={bx.id} className="flex gap-3 py-1 border-b last:border-0">
+                                  <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${
+                                    bx.type === "POSITIVE" ? "bg-green-500" : bx.type === "NEGATIVE" ? "bg-red-500" : "bg-muted-foreground"
+                                  }`} />
+                                  <div>
+                                    <p className="text-sm font-bold">{bx.title}</p>
+                                    <p className="text-xs text-muted-foreground">{format(new Date(bx.date), "MMM d, yyyy")}</p>
+                                  </div>
+                               </div>
+                             ))}
+                             {student.behaviors.length === 0 && (
+                                <p className="text-sm text-muted-foreground italic py-2">No recent behavior reports</p>
+                             )}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  </TabsContent>
+                );
+              })}
+            </Tabs>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-2xl border-2 border-dashed">
+             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+               <User className="w-8 h-8 text-muted-foreground" />
+             </div>
+             <h2 className="text-2xl font-bold mb-2">No Students Linked</h2>
+             <p className="text-muted-foreground max-w-sm text-center text-sm px-6">
+               Please contact the school office to associate your children's profiles with your account.
+             </p>
+          </div>
+        )}
       </div>
     );
   }
