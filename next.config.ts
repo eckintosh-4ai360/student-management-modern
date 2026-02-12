@@ -40,6 +40,14 @@ const nextConfig: NextConfig = {
     // Enable optimized package imports
     optimizePackageImports: ["lucide-react", "recharts", "date-fns"],
   },
+  
+  // Webpack configuration for Prisma
+  webpack: (config: any, { isServer }: { isServer: boolean }) => {
+    if (isServer) {
+      config.externals.push("@prisma/client");
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
