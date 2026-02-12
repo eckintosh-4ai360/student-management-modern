@@ -64,4 +64,3 @@ export function formatDataForExport(data: any[], fieldsToRemove: string[] = ['id
     return formattedItem;
   });
 }
-"

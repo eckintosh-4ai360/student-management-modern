@@ -20,7 +20,7 @@ interface Student {
   img?: string | null;
   class: { name: string };
   grade: { level: number };
-  parent: { name: string; surname: string; phone: string } | null;
+  parent: { id?: string; name?: string; surname?: string; phone?: string } | null;
 }
 
 interface ViewStudentModalProps {

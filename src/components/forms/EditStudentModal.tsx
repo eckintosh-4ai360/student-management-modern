@@ -30,7 +30,7 @@ interface EditStudentModalProps {
     img?: string | null;
     class: { id: number; name: string };
     grade: { id: number; level: number };
-    parent: { id: string };
+    parent: { id: string; name?: string; surname?: string; phone?: string } | null;
   };
   grades: { id: number; level: number }[];
   classes: { id: number; name: string; gradeId: number }[];
@@ -356,7 +356,7 @@ export function EditStudentModal({ open, onOpenChange, student, grades, classes,
 
             <div className="space-y-2">
               <Label htmlFor="parentId">Parent *</Label>
-              <Select id="parentId" name="parentId" defaultValue={student.parent.id} required>
+              <Select id="parentId" name="parentId" defaultValue={student.parent?.id || ""} required>
                 {parents.map((parent) => (
                   <option key={parent.id} value={parent.id}>
                     {parent.name} {parent.surname}

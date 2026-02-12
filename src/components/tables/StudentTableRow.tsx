@@ -25,7 +25,7 @@ interface Student {
   img?: string | null;
   class: { id: number; name: string };
   grade: { id: number; level: number };
-  parent: { id: string; name: string; surname: string; phone: string } | null;
+  parent: { id: string; name?: string; surname?: string; phone?: string } | null;
 }
 
 interface StudentTableRowProps {
