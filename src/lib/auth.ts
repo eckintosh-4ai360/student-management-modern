@@ -14,83 +14,91 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.username || !credentials?.password) {
+        try {
+          if (!credentials?.username || !credentials?.password) {
+            return null;
+          }
+
+          // Check in Admin table (username or staffId)
+          const admin = await prisma.admin.findFirst({
+            where: {
+              OR: [
+                { username: credentials.username },
+                { staffId: credentials.username },
+              ],
+            },
+          });
+
+          if (admin && await bcrypt.compare(credentials.password, admin.password)) {
+            return {
+              id: admin.id,
+              username: admin.username,
+              name: admin.name,
+              role: "admin",
+              adminRole: admin.role,
+            };
+          }
+
+          // Check in Teacher table
+          const teacher = await prisma.teacher.findFirst({
+            where: {
+              OR: [
+                { username: credentials.username },
+                { staffId: credentials.username },
+              ],
+            },
+          });
+
+          if (teacher && await bcrypt.compare(credentials.password, teacher.password)) {
+            return {
+              id: teacher.id,
+              username: teacher.username,
+              name: teacher.name + " " + teacher.surname,
+              role: "teacher",
+            };
+          }
+
+          // Check in Student table
+          const student = await prisma.student.findFirst({
+            where: {
+              OR: [
+                { username: credentials.username },
+                { studentId: credentials.username },
+              ],
+            },
+          });
+
+          if (student && await bcrypt.compare(credentials.password, student.password)) {
+            return {
+              id: student.id,
+              username: student.username,
+              name: student.name + " " + student.surname,
+              role: "student",
+            };
+          }
+
+          // Check in Parent table
+          const parent = await prisma.parent.findUnique({
+            where: { username: credentials.username },
+          });
+
+          if (parent && await bcrypt.compare(credentials.password, parent.password)) {
+            return {
+              id: parent.id,
+              username: parent.username,
+              name: parent.name + " " + parent.surname,
+              role: "parent",
+            };
+          }
+
           return null;
+        } catch (error) {
+          console.error("Auth authorize error details:", error);
+          // Re-throw or return null to trigger NextAuth error page
+          // Returning null usually results in "CredentialsSignin" error on client
+          // Throwing an Error results in "Server error" on client but shows stack in Vercel logs
+          throw new Error("Login failed due to a server-side error. Check database connection.");
         }
-
-        // Check in Admin table (username or staffId)
-        const admin = await prisma.admin.findFirst({
-          where: {
-            OR: [
-              { username: credentials.username },
-              { staffId: credentials.username },
-            ],
-          },
-        });
-
-        if (admin && await bcrypt.compare(credentials.password, admin.password)) {
-          return {
-            id: admin.id,
-            username: admin.username,
-            name: admin.name,
-            role: "admin",
-            adminRole: admin.role,
-          };
-        }
-
-        // Check in Teacher table
-        const teacher = await prisma.teacher.findFirst({
-          where: {
-            OR: [
-              { username: credentials.username },
-              { staffId: credentials.username },
-            ],
-          },
-        });
-
-        if (teacher && await bcrypt.compare(credentials.password, teacher.password)) {
-          return {
-            id: teacher.id,
-            username: teacher.username,
-            name: teacher.name + " " + teacher.surname,
-            role: "teacher",
-          };
-        }
-
-        // Check in Student table
-        const student = await prisma.student.findFirst({
-          where: {
-            OR: [
-              { username: credentials.username },
-              { studentId: credentials.username },
-            ],
-          },
-        });
-
-        if (student && await bcrypt.compare(credentials.password, student.password)) {
-          return {
-            id: student.id,
-            username: student.username,
-            name: student.name + " " + student.surname,
-            role: "student",
-          };
-        }
-
-        // Check in Parent table
-        const parent = await prisma.parent.findUnique({
-          where: { username: credentials.username },
-        });
-
-        if (parent && await bcrypt.compare(credentials.password, parent.password)) {
-          return {
-            id: parent.id,
-            username: parent.username,
-            name: parent.name + " " + parent.surname,
-            role: "parent",
-          };
-        }
-
-        return null;
       },
     }),
   ],
