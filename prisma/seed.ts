@@ -1,7 +1,15 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from '@prisma/adapter-pg'
+import pg from 'pg'
 import bcrypt from "bcryptjs";
+import * as dotenv from "dotenv";
 
-const prisma = new PrismaClient();
+dotenv.config();
+
+const connectionString = `${process.env.DATABASE_URL}`
+const pool = new pg.Pool({ connectionString })
+const adapter = new PrismaPg(pool)
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   // Clear existing data to avoid conflicts

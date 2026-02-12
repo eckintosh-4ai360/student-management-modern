@@ -3,8 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "mysql://root:root@localhost:3306/student_man_sys"
+  provider = "postgresql"
 }
 
 model Admin {
