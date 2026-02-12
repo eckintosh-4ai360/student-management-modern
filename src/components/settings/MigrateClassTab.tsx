@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { AlertCircle, ArrowRight, Users } from "lucide-react";
+import { AlertCircle, ArrowRight, Users, Check, Square, CheckSquare } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface MigrateClassTabProps {
   classes: any[];
@@ -17,9 +18,37 @@ export function MigrateClassTab({ classes }: MigrateClassTabProps) {
   const [sourceClassId, setSourceClassId] = useState("");
   const [targetClassId, setTargetClassId] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
 
   const sourceClass = classes.find((c) => c.id === parseInt(sourceClassId));
   const targetClass = classes.find((c) => c.id === parseInt(targetClassId));
+
+  // Initialize selected students when source class changes
+  useEffect(() => {
+    if (sourceClass) {
+      setSelectedStudentIds(sourceClass.students.map((s: any) => s.id));
+    } else {
+      setSelectedStudentIds([]);
+    }
+  }, [sourceClass]);
+
+  const toggleStudent = (studentId: number) => {
+    setSelectedStudentIds((prev) =>
+      prev.includes(studentId)
+        ? prev.filter((id) => id !== studentId)
+        : [...prev, studentId]
+    );
+  };
+
+  const selectAll = () => {
+    if (sourceClass) {
+      setSelectedStudentIds(sourceClass.students.map((s: any) => s.id));
+    }
+  };
+
+  const deselectAll = () => {
+    setSelectedStudentIds([]);
+  };
 
   const handleMigrate = () => {
     if (!sourceClassId || !targetClassId) {
@@ -32,26 +61,31 @@ export function MigrateClassTab({ classes }: MigrateClassTabProps) {
       return;
     }
 
+    if (selectedStudentIds.length === 0) {
+      toast.error("Please select at least one student to migrate");
+      return;
+    }
+
     setShowConfirmation(true);
   };
 
   const confirmMigration = () => {
     startTransition(async () => {
       try {
-        // TODO: Implement migrateStudentsToClass action
         const response = await fetch("/api/classes/migrate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             sourceClassId: parseInt(sourceClassId),
             targetClassId: parseInt(targetClassId),
+            studentIds: selectedStudentIds, // Pass the selected student IDs
           }),
         });
 
         const result = await response.json();
 
         if (response.ok) {
-          toast.success(`Successfully migrated ${sourceClass?.students.length} students to ${targetClass?.name}`);
+          toast.success(`Successfully migrated ${selectedStudentIds.length} students to ${targetClass?.name}`);
           setSourceClassId("");
           setTargetClassId("");
           setShowConfirmation(false);
@@ -76,7 +110,7 @@ export function MigrateClassTab({ classes }: MigrateClassTabProps) {
             id="sourceClass"
             value={sourceClassId}
             onChange={(e) => setSourceClassId(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
           >
             <option value="">Select source class...</option>
             {classes.map((cls) => (
@@ -87,8 +121,8 @@ export function MigrateClassTab({ classes }: MigrateClassTabProps) {
           </select>
         </div>
 
-        <div className="flex justify-center">
-          <ArrowRight className="w-8 h-8 text-blue-600" />
+        <div className="flex justify-center pb-1">
+          <ArrowRight className="w-8 h-8 text-primary" />
         </div>
 
         <div className="space-y-2">
@@ -97,7 +131,7 @@ export function MigrateClassTab({ classes }: MigrateClassTabProps) {
             id="targetClass"
             value={targetClassId}
             onChange={(e) => setTargetClassId(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
           >
             <option value="">Select target class...</option>
             {classes.map((cls) => (
@@ -111,27 +145,56 @@ export function MigrateClassTab({ classes }: MigrateClassTabProps) {
 
       {/* Migration Preview */}
       {sourceClass && targetClass && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-5">
+          <div className="flex items-start gap-4">
+            <div className="p-2 bg-primary/10 rounded-full">
+              <AlertCircle className="w-5 h-5 text-primary" />
+            </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-blue-900 mb-2">Migration Preview</h4>
-              <p className="text-sm text-blue-800 mb-3">
-                You are about to migrate <strong>{sourceClass.students.length} students</strong> from{" "}
-                <strong>{sourceClass.name}</strong> to <strong>{targetClass.name}</strong>.
+              <h4 className="font-semibold text-lg text-foreground mb-1">Migration Preview</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Select the students you want to migrate to <strong>{targetClass.name}</strong>. 
+                Unselected students will remain in <strong>{sourceClass.name}</strong>.
               </p>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <Users className="w-4 h-4" />
-                  <span className="font-medium">Students to migrate:</span>
+              
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <Users className="w-4 h-4 text-primary" />
+                  <span>{selectedStudentIds.length} of {sourceClass.students.length} students selected</span>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-40 overflow-y-auto">
-                  {sourceClass.students.map((student: any) => (
-                    <div key={student.id} className="text-xs bg-white px-2 py-1 rounded border">
-                      {student.name} {student.surname}
-                    </div>
-                  ))}
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="sm" onClick={selectAll} className="text-xs h-8">
+                    Select All
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={deselectAll} className="text-xs h-8 text-destructive hover:text-destructive">
+                    Deselect All
+                  </Button>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                {sourceClass.students.map((student: any) => {
+                  const isSelected = selectedStudentIds.includes(student.id);
+                  return (
+                    <button
+                      key={student.id}
+                      onClick={() => toggleStudent(student.id)}
+                      className={cn(
+                        "flex items-center gap-2 text-xs px-3 py-2 rounded-md border transition-all duration-200 text-left",
+                        isSelected 
+                          ? "bg-primary/10 border-primary text-primary font-medium" 
+                          : "bg-card border-input text-muted-foreground hover:border-primary/50"
+                      )}
+                    >
+                      {isSelected ? (
+                        <CheckSquare className="w-3.5 h-3.5" />
+                      ) : (
+                        <Square className="w-3.5 h-3.5" />
+                      )}
+                      <span className="truncate">{student.name} {student.surname}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -139,22 +202,21 @@ export function MigrateClassTab({ classes }: MigrateClassTabProps) {
       )}
 
       {/* Warning Message */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+      <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-destructive mt-0.5" />
           <div>
-            <h4 className="font-semibold text-yellow-900 mb-1">Important Notice</h4>
-            <p className="text-sm text-yellow-800">
-              This action will move all students from the source class to the target class. This operation is typically
-              performed at the end of an academic term or year. Please ensure you have selected the correct classes before
-              proceeding.
+            <h4 className="font-semibold text-destructive mb-1">Important Notice</h4>
+            <p className="text-sm text-muted-foreground">
+              Students not selected will be "repeated" and remain in their current class. 
+              Please ensure you have selected the correct students before proceeding.
             </p>
           </div>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-end gap-3 pt-4 border-t">
+      <div className="flex justify-end gap-3 pt-6 border-t">
         <Button
           type="button"
           variant="outline"
@@ -169,23 +231,26 @@ export function MigrateClassTab({ classes }: MigrateClassTabProps) {
         <Button
           type="button"
           onClick={handleMigrate}
-          disabled={!sourceClassId || !targetClassId || isPending}
-          className="bg-blue-600 hover:bg-blue-700"
+          disabled={!sourceClassId || !targetClassId || selectedStudentIds.length === 0 || isPending}
+          className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[140px]"
         >
-          Migrate Students
+          {isPending ? "Processing..." : "Migrate selected"}
         </Button>
       </div>
 
       {/* Confirmation Dialog */}
       {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-bold mb-4 text-red-600">Confirm Migration</h3>
-            <p className="text-gray-700 mb-6">
-              Are you absolutely sure you want to migrate <strong>{sourceClass?.students.length} students</strong> from{" "}
-              <strong>{sourceClass?.name}</strong> to <strong>{targetClass?.name}</strong>?
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-card border border-border rounded-xl p-6 max-w-md w-full shadow-2xl animate-in zoom-in duration-200">
+            <h3 className="text-xl font-bold mb-2 text-destructive">Confirm Migration</h3>
+            <p className="text-foreground mb-4">
+              Are you sure you want to migrate <strong>{selectedStudentIds.length} students</strong> to <strong>{targetClass?.name}</strong>?
             </p>
-            <p className="text-sm text-gray-600 mb-6">This action cannot be easily undone.</p>
+            <div className="bg-muted p-3 rounded-lg mb-6 text-sm">
+              <p className="text-muted-foreground">
+                {sourceClass?.students.length! - selectedStudentIds.length} students will remain in {sourceClass?.name}.
+              </p>
+            </div>
             <div className="flex justify-end gap-3">
               <Button
                 type="button"
@@ -199,9 +264,9 @@ export function MigrateClassTab({ classes }: MigrateClassTabProps) {
                 type="button"
                 onClick={confirmMigration}
                 disabled={isPending}
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
               >
-                {isPending ? "Migrating..." : "Yes, Migrate"}
+                {isPending ? "Migrating..." : "Confirm Migration"}
               </Button>
             </div>
           </div>

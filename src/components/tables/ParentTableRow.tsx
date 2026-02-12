@@ -7,6 +7,7 @@ import { EditParentModal } from "@/components/forms/EditParentModal";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { deleteParent } from "@/lib/actions";
 import { Pencil, Trash2, Users } from "lucide-react";
+import Image from "next/image";
 
 interface Parent {
   id: string;
@@ -16,6 +17,7 @@ interface Parent {
   email: string | null;
   phone: string;
   address: string;
+  img?: string | null;
   _count?: {
     students: number;
   };
@@ -53,11 +55,23 @@ export function ParentTableRow({ parent }: ParentTableRowProps) {
       <tr className="border-b transition-colors hover:bg-muted/50">
         <td className="p-4">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-              <span className="text-sm font-semibold text-purple-600">
-                {parent.name.charAt(0)}{parent.surname.charAt(0)}
-              </span>
-            </div>
+            {parent.img ? (
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200">
+                <Image
+                  src={parent.img}
+                  alt={`${parent.name} ${parent.surname}`}
+                  width={40}
+                  height={40}
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                <span className="text-sm font-semibold text-purple-600">
+                  {parent.name.charAt(0)}{parent.surname.charAt(0)}
+                </span>
+              </div>
+            )}
             <div>
               <p className="font-medium">{parent.name} {parent.surname}</p>
               <p className="text-sm text-muted-foreground">@{parent.username}</p>

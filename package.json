@@ -6,6 +6,7 @@
     "dev": "next dev --webpack",
     "dev:turbo": "next dev",
     "build": "next build",
+    "build:analyze": "cross-env ANALYZE=true next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "db:push": "prisma db push",
@@ -53,12 +54,14 @@
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
     "babel-plugin-react-compiler": "1.0.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "webpack-bundle-analyzer": "^4.10.1"
   }
 }

@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { sourceClassId, targetClassId } = await request.json();
+    const { sourceClassId, targetClassId, studentIds } = await request.json();
 
     if (!sourceClassId || !targetClassId) {
       return NextResponse.json({ error: "Source and target class IDs are required" }, { status: 400 });
@@ -21,10 +21,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Source and target classes cannot be the same" }, { status: 400 });
     }
 
-    // Migrate all students from source class to target class
+    // Migrate students from source class to target class
+    // If studentIds is provided, only migrate those specific students
     const result = await prisma.student.updateMany({
       where: {
         classId: sourceClassId,
+        ...(studentIds && studentIds.length > 0 ? { id: { in: studentIds } } : {}),
       },
       data: {
         classId: targetClassId,

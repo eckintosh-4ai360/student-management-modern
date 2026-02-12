@@ -108,6 +108,7 @@ export const parentSchema = z.object({
     .or(z.literal("")),
   phone: z.string().min(1, { message: "Phone is required!" }),
   address: z.string().min(1, { message: "Address is required!" }),
+  img: z.string().optional(),
 });
 
 export type ParentSchema = z.infer<typeof parentSchema>;

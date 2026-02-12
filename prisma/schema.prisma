@@ -97,6 +97,7 @@ model Parent {
   email            String?   @unique
   phone            String    @unique
   address          String
+  img              String?
   resetToken       String?
   resetTokenExpiry DateTime?
   createdAt        DateTime  @default(now())

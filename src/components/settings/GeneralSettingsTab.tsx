@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,12 +16,32 @@ export function GeneralSettingsTab({ settings }: GeneralSettingsTabProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+  const [vacationDate, setVacationDate] = useState(settings.vacationDate ? new Date(settings.vacationDate).toISOString().split('T')[0] : "");
+  const [reopeningDate, setReopeningDate] = useState(settings.reopeningDate ? new Date(settings.reopeningDate).toISOString().split('T')[0] : "");
+  const [totalAttendance, setTotalAttendance] = useState(settings.totalAttendanceDays || 0);
+
+  // Effect to update totalAttendance when dates change
+  useEffect(() => {
+    if (vacationDate && reopeningDate) {
+      const vDate = new Date(vacationDate);
+      const rDate = new Date(reopeningDate);
+      
+      // Only calculate if dates are valid
+      if (!isNaN(vDate.getTime()) && !isNaN(rDate.getTime())) {
+        const diffTime = vDate.getTime() - rDate.getTime();
+        const diffDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+        setTotalAttendance(diffDays);
+      }
+    }
+  }, [vacationDate, reopeningDate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage("");
 
     const formData = new FormData(e.currentTarget);
+    // Explicitly add totalAttendanceDays since disabled fields might not be included
+    formData.set("totalAttendanceDays", totalAttendance.toString());
 
     startTransition(async () => {
       const result = await updateSystemSettings(formData);
@@ -64,32 +84,38 @@ export function GeneralSettingsTab({ settings }: GeneralSettingsTabProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="vacationDate">Vacation Date</Label>
-            <Input
-              id="vacationDate"
-              name="vacationDate"
-              type="date"
-              defaultValue={settings.vacationDate ? new Date(settings.vacationDate).toISOString().split('T')[0] : ""}
-            />
-          </div>
-          <div className="space-y-2">
             <Label htmlFor="reopeningDate">Reopening Date</Label>
             <Input
               id="reopeningDate"
               name="reopeningDate"
               type="date"
-              defaultValue={settings.reopeningDate ? new Date(settings.reopeningDate).toISOString().split('T')[0] : ""}
+              value={reopeningDate}
+              onChange={(e) => setReopeningDate(e.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="totalAttendanceDays">Total Attendance</Label>
+            <Label htmlFor="vacationDate">Vacation Date</Label>
+            <Input
+              id="vacationDate"
+              name="vacationDate"
+              type="date"
+              value={vacationDate}
+              onChange={(e) => setVacationDate(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="totalAttendanceDays">Total Attendance (Calculated)</Label>
             <Input
               id="totalAttendanceDays"
               name="totalAttendanceDays"
               type="number"
-              defaultValue={settings.totalAttendanceDays}
+              value={totalAttendance}
+              readOnly
+              disabled
+              className="bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
               placeholder="68"
             />
+            <p className="text-xs text-gray-500 italic">Automatically calculated from dates above</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="studentIdInitials">Student ID Initials</Label>

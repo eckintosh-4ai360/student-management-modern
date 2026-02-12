@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import { SidebarProvider } from "@/contexts/SidebarContext";
+import { RoutePreloader, useRoleBasedPreloader } from "@/components/RoutePreloader";
 
 export default function DashboardLayout({
   children,
@@ -14,6 +15,10 @@ export default function DashboardLayout({
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  
+  // Get role-based routes for preloading
+  const userRole = (session?.user as any)?.role || "student";
+  const preloadRoutes = useRoleBasedPreloader(userRole);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -35,6 +40,9 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider>
+      {/* Background route preloader */}
+      <RoutePreloader routes={preloadRoutes} />
+      
       <div className="flex h-screen bg-background text-foreground">
         <Sidebar />
         <div className="flex-1 flex flex-col overflow-hidden">

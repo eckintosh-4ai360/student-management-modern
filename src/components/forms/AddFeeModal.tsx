@@ -92,7 +92,12 @@ export function AddFeeModal({ open, onOpenChange, students }: AddFeeModalProps) 
 
             <div className="space-y-2">
               <Label htmlFor="title">Title *</Label>
-              <Input id="title" name="title" placeholder="e.g., Tuition Fee, Library Fee" required />
+              <Select id="title" name="title" required>
+                <option value="">Select Type</option>
+                <option value="Tuition">Tuition</option>
+                <option value="Admission">Admission</option>
+                <option value="Auxiliary Fees">Auxiliary Fees</option>
+              </Select>
               {errors.title && <p className="text-red-500 text-xs">{errors.title}</p>}
             </div>
 

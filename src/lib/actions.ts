@@ -476,6 +476,7 @@ export const createParent = async (
         email: data.email || null,
         phone: data.phone,
         address: data.address,
+        img: data.img || null,
       },
     });
 
@@ -503,6 +504,7 @@ export const updateParent = async (
       email: data.email || null,
       phone: data.phone,
       address: data.address,
+      img: data.img || null,
     };
 
     if (data.password && data.password !== "") {

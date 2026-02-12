@@ -8,11 +8,10 @@ import { FeeActions } from "@/components/tables/FeeActions";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export default async function FeesPage({
-  searchParams,
-}: {
-  searchParams: { page?: string; status?: string };
+export default async function FeesPage(props: {
+  searchParams: Promise<{ page?: string; status?: string }>;
 }) {
+  const searchParams = await props.searchParams;
   const session = await getServerSession(authOptions);
   const userRole = (session?.user as any)?.role || "student";
   const username = (session?.user as any)?.username;

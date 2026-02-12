@@ -66,6 +66,36 @@ export function EditAdminModal({ open, onOpenChange, admin }: EditAdminModalProp
     setMessage("");
 
     const formData = new FormData(e.currentTarget);
+    let imagePath: string | undefined = admin.img || undefined;
+
+    // Upload image if a new one was selected
+    if (imageFile) {
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", imageFile);
+
+      try {
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          setMessage("Failed to upload image: " + (errorData.error || "Unknown error"));
+          return;
+        }
+
+        const uploadResult = await uploadResponse.json();
+        if (uploadResult.success) {
+          imagePath = uploadResult.path;
+        }
+      } catch (error) {
+        console.error("Image upload error:", error);
+        setMessage("Failed to upload image");
+        return;
+      }
+    }
+
     const data = {
       id: admin.id,
       username: formData.get("username") as string,
@@ -73,7 +103,7 @@ export function EditAdminModal({ open, onOpenChange, admin }: EditAdminModalProp
       email: formData.get("email") as string,
       role: formData.get("role") as string,
       password: formData.get("password") as string || undefined,
-      img: imagePreview || undefined,
+      img: imagePath,
     };
 
     const validation = adminSchema.safeParse(data);

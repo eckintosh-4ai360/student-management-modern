@@ -11,6 +11,7 @@ import {
 import { format } from "date-fns";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 
 export default async function Student360Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -77,8 +78,17 @@ export default async function Student360Page({ params }: { params: Promise<{ id:
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl p-6 shadow-xl">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-6">
-            <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl font-bold border-4 border-white/30">
-              {student.name.charAt(0)}{student.surname.charAt(0)}
+            <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl font-bold border-4 border-white/30 overflow-hidden relative">
+              {student.img ? (
+                <Image
+                  src={student.img}
+                  alt={`${student.name} ${student.surname}`}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <>{student.name.charAt(0)}{student.surname.charAt(0)}</>
+              )}
             </div>
             <div>
               <h1 className="text-4xl font-bold">{student.name} {student.surname}</h1>

@@ -37,21 +37,20 @@ export default function EnrollmentChart({ classes }: EnrollmentChartProps) {
     <div className="w-full h-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
+          layout="vertical"
           data={chartData}
-          margin={{ top: 10, right: 10, left: 0, bottom: 50 }}
+          margin={{ top: 10, right: 30, left: 40, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
           <XAxis 
-            dataKey="name" 
-            angle={-45}
-            textAnchor="end"
-            height={80}
-            tick={{ fontSize: 11 }}
-            interval={0}
+            type="number"
+            hide
           />
           <YAxis 
-            tick={{ fontSize: 12 }}
-            label={{ value: 'Students', angle: -90, position: 'insideLeft' }}
+            dataKey="name" 
+            type="category"
+            tick={{ fontSize: 12, fontWeight: 500 }}
+            width={80}
           />
           <Tooltip 
             contentStyle={{ 
@@ -63,7 +62,7 @@ export default function EnrollmentChart({ classes }: EnrollmentChartProps) {
             formatter={(value) => [`${value} students`, 'Enrollment']}
             cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
           />
-          <Bar dataKey="value" fill="#3b82f6" radius={[8, 8, 0, 0]}>
+          <Bar dataKey="value" fill="#3b82f6" radius={[0, 8, 8, 0]} barSize={20}>
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={lightColors[index % lightColors.length]} />
             ))}

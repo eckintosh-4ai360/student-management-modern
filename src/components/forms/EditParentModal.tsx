@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updateParent } from "@/lib/actions";
 import { parentSchema } from "@/lib/formValidationSchemas";
+import { Upload, X } from "lucide-react";
+import Image from "next/image";
 
 interface EditParentModalProps {
   open: boolean;
@@ -20,6 +22,7 @@ interface EditParentModalProps {
     email: string | null;
     phone: string;
     address: string;
+    img?: string | null;
   };
 }
 
@@ -28,14 +31,35 @@ export function EditParentModal({ open, onOpenChange, parent }: EditParentModalP
   const [isPending, startTransition] = useTransition();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<string>("");
+  const [imagePreview, setImagePreview] = useState<string | null>(parent.img || null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // Reset form when modal closes
+  // Reset form when modal closes or parent changes
   useEffect(() => {
-    if (!open) {
+    if (open) {
+      setImagePreview(parent.img || null);
+      setImageFile(null);
       setErrors({});
       setMessage("");
     }
-  }, [open]);
+  }, [open, parent]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,6 +67,39 @@ export function EditParentModal({ open, onOpenChange, parent }: EditParentModalP
     setMessage("");
 
     const formData = new FormData(e.currentTarget);
+    let imagePath: string | undefined = parent.img || undefined;
+
+    // Upload image if a new one was selected
+    if (imageFile) {
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", imageFile);
+
+      try {
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          setMessage("Failed to upload image: " + (errorData.error || "Unknown error"));
+          return;
+        }
+
+        const uploadResult = await uploadResponse.json();
+        if (uploadResult.success) {
+          imagePath = uploadResult.path;
+        }
+      } catch (error) {
+        console.error("Image upload error:", error);
+        setMessage("Failed to upload image");
+        return;
+      }
+    } else if (imagePreview === null) {
+      // Image was removed
+      imagePath = undefined;
+    }
+
     const data = {
       id: parent.id,
       username: formData.get("username") as string,
@@ -52,6 +109,7 @@ export function EditParentModal({ open, onOpenChange, parent }: EditParentModalP
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       address: formData.get("address") as string,
+      img: imagePath,
     };
 
     // Validate
@@ -91,6 +149,46 @@ export function EditParentModal({ open, onOpenChange, parent }: EditParentModalP
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
+            {/* Profile Picture Upload */}
+            <div className="space-y-2 col-span-2">
+              <Label htmlFor="img">Profile Picture (Optional)</Label>
+              <div className="flex items-center gap-4">
+                {imagePreview ? (
+                  <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
+                    <Image
+                      src={imagePreview}
+                      alt="Profile preview"
+                      width={96}
+                      height={96}
+                      className="object-cover w-full h-full"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300">
+                    <Upload className="w-8 h-8 text-gray-400" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <Input
+                    id="img"
+                    name="img"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="cursor-pointer"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Update profile picture (optional)</p>
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="username">Username *</Label>
               <Input id="username" name="username" defaultValue={parent.username} required />

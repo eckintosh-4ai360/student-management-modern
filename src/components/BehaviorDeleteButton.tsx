@@ -12,6 +12,7 @@ interface BehaviorDeleteButtonProps {
 export function BehaviorDeleteButton({ behaviorId }: BehaviorDeleteButtonProps) {
   const [isPending, startTransition] = useTransition();
   const [showConfirm, setShowConfirm] = useState(false);
+  
 
   const handleDelete = () => {
     startTransition(async () => {

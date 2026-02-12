@@ -19,6 +19,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import PerformanceChart from "@/components/PerformanceChart";
 
+// Enable ISR with 60 second revalidation
+export const revalidate = 60;
+
 export default async function DashboardPage() {
   let session;
   
@@ -780,218 +783,440 @@ export default async function DashboardPage() {
   // Parent Dashboard
   if (userRole === "parent" && parentData) {
     return (
-      <div className="space-y-6 pb-12">
-        {/* Welcome Header */}
+      <div className="space-y-8 pb-12">
+        {/* Enhanced Welcome Header */}
         <div 
-          className="rounded-2xl p-6 md:p-8 shadow-sm text-white"
+          className="relative overflow-hidden rounded-3xl p-8 md:p-10 shadow-2xl text-white"
           style={{
-            background: `linear-gradient(to right, ${systemSettings.primaryColor}, ${systemSettings.secondaryColor})`
+            background: `linear-gradient(135deg, ${systemSettings.primaryColor}, ${systemSettings.secondaryColor})`
           }}
         >
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                Hello, {session?.user?.name}
-              </h1>
-              <p className="text-white/90 font-medium">Monitoring your children's progress today.</p>
-            </div>
-            <div className="flex gap-2">
-              <RefreshButton />
-              <Link href="/dashboard/messages">
-                <Button variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white rounded-xl">
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Messages
-                </Button>
-              </Link>
+          <div className="relative z-10">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <User className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+                      Welcome back, {session?.user?.name}!
+                    </h1>
+                    <p className="text-white/90 font-medium mt-1">
+                      {format(new Date(), "EEEE, MMMM d, yyyy")}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-white/80 text-sm md:text-base mt-3 max-w-2xl">
+                  Monitor your {parentData.students.length === 1 ? "child's" : "children's"} academic progress, attendance, and school activities all in one place.
+                </p>
+              </div>
+              
+              <div className="flex flex-wrap gap-3">
+                <RefreshButton />
+                <Link href="/dashboard/messages">
+                  <Button variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white backdrop-blur-sm">
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Messages
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
+          
+          {/* Decorative Elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
         </div>
 
-        {/* Children Management section */}
+        {/* Children Management Section */}
         {parentData.students.length > 0 ? (
-          <div className="space-y-6">
-            <Tabs defaultValue={parentData.students[0].id} className="w-full">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
-                <h2 className="text-xl font-bold">Students</h2>
-                <TabsList className="bg-muted h-auto p-1 rounded-xl">
-                  {parentData.students.map((student) => (
-                    <TabsTrigger 
-                      key={student.id} 
-                      value={student.id}
-                      className="px-4 py-2 text-sm font-semibold rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"
-                    >
-                      {student.name}
-                    </TabsTrigger>
-                  ))}
+          <div className="space-y-8">
+            {/* Student Profile Cards */}
+            <div>
+              <h2 className="text-2xl font-black mb-6 flex items-center gap-2">
+                <GraduationCap className="w-7 h-7 text-primary" />
+                Your {parentData.students.length === 1 ? "Child" : "Children"}
+              </h2>
+              
+              <Tabs defaultValue={parentData.students[0].id} className="w-full">
+                <TabsList className="grid w-full gap-4 bg-transparent h-auto p-0 mb-8" style={{
+                  gridTemplateColumns: `repeat(${Math.min(parentData.students.length, 3)}, 1fr)`
+                }}>
+                  {parentData.students.map((student) => {
+                    const attendanceRate = student.attendances.length > 0 
+                      ? (student.attendances.filter(a => a.present).length / student.attendances.length) * 100 
+                      : 0;
+                    const avgScore = student.results.length > 0
+                      ? student.results.reduce((acc, r) => acc + r.score, 0) / student.results.length
+                      : 0;
+                    
+                    return (
+                      <TabsTrigger 
+                        key={student.id} 
+                        value={student.id}
+                        className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border-2 data-[state=inactive]:border-border rounded-2xl p-6 h-auto shadow-md hover:shadow-xl transition-all duration-300"
+                      >
+                        <div className="flex flex-col items-center gap-3 w-full">
+                          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-black shadow-lg">
+                            {student.name.charAt(0)}{student.surname.charAt(0)}
+                          </div>
+                          <div className="text-center">
+                            <p className="font-bold text-lg">{student.name} {student.surname}</p>
+                            <p className="text-xs opacity-70 mt-1">Grade {student.grade.level} • {student.class.name}</p>
+                          </div>
+                          <div className="flex gap-4 mt-2 text-xs">
+                            <div className="flex items-center gap-1">
+                              <Activity className="w-3 h-3" />
+                              <span>{attendanceRate.toFixed(0)}%</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Award className="w-3 h-3" />
+                              <span>{avgScore.toFixed(0)}%</span>
+                            </div>
+                          </div>
+                        </div>
+                      </TabsTrigger>
+                    );
+                  })}
                 </TabsList>
-              </div>
 
-              {parentData.students.map((student) => {
-                const attendanceRate = student.attendances.length > 0 
-                  ? (student.attendances.filter(a => a.present).length / student.attendances.length) * 100 
-                  : 0;
-                
-                const avgScore = student.results.length > 0
-                  ? student.results.reduce((acc, r) => acc + r.score, 0) / student.results.length
-                  : 0;
+                {parentData.students.map((student) => {
+                  const attendanceRate = student.attendances.length > 0 
+                    ? (student.attendances.filter(a => a.present).length / student.attendances.length) * 100 
+                    : 0;
+                  
+                  const avgScore = student.results.length > 0
+                    ? student.results.reduce((acc, r) => acc + r.score, 0) / student.results.length
+                    : 0;
 
-                const pendingFeesAmount = student.fees.reduce((sum, fee) => sum + fee.amount, 0);
+                  const pendingFeesAmount = student.fees.reduce((sum, fee) => sum + fee.amount, 0);
 
-                const chartData = student.results.slice().reverse().map(r => ({
-                  name: r.exam?.lesson.subject.name || r.assignment?.lesson.subject.name || "Subject",
-                  score: r.score,
-                  fullMark: 100
-                }));
+                  const chartData = student.results.slice().reverse().map(r => ({
+                    name: r.exam?.lesson.subject.name || r.assignment?.lesson.subject.name || "Subject",
+                    score: r.score,
+                    fullMark: 100
+                  }));
 
-                return (
-                  <TabsContent key={student.id} value={student.id} className="space-y-6 animate-in fade-in duration-300 outline-none">
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      <Card className="p-4 border shadow-sm">
-                        <div className="flex items-center gap-3 mb-2">
-                          <GraduationCap className="h-5 w-5 text-primary" />
-                          <span className="text-sm font-medium text-muted-foreground">Class</span>
-                        </div>
-                        <div className="text-2xl font-bold">{student.class.name}</div>
-                        <p className="text-xs text-muted-foreground">Grade {student.grade.level}</p>
-                      </Card>
-
-                      <Card className="p-4 border shadow-sm">
-                        <div className="flex items-center gap-3 mb-2">
-                          <Activity className="h-5 w-5 text-green-600" />
-                          <span className="text-sm font-medium text-muted-foreground">Attendance</span>
-                        </div>
-                        <div className="text-2xl font-bold text-green-600">{attendanceRate.toFixed(1)}%</div>
-                        <p className="text-xs text-muted-foreground">{student.attendances.filter(a => a.present).length} Days Present</p>
-                      </Card>
-
-                      <Card className="p-4 border shadow-sm">
-                        <div className="flex items-center gap-3 mb-2">
-                          <TrendingUp className="h-5 w-5 text-purple-600" />
-                          <span className="text-sm font-medium text-muted-foreground">Avg. Performance</span>
-                        </div>
-                        <div className="text-2xl font-bold text-purple-600">{avgScore.toFixed(1)}%</div>
-                        <p className="text-xs text-muted-foreground">Overall Score</p>
-                      </Card>
-
-                      <Card className={`p-4 border shadow-sm ${pendingFeesAmount > 0 ? "bg-red-50/50" : ""}`}>
-                        <div className="flex items-center gap-3 mb-2">
-                          <Banknote className={`h-5 w-5 ${pendingFeesAmount > 0 ? "text-red-600" : "text-orange-600"}`} />
-                          <span className="text-sm font-medium text-muted-foreground">Fees Due</span>
-                        </div>
-                        <div className={`text-2xl font-bold ${pendingFeesAmount > 0 ? "text-red-600" : ""}`}>
-                          GH₵{pendingFeesAmount.toLocaleString()}
-                        </div>
-                        <p className="text-xs text-muted-foreground">{pendingFeesAmount > 0 ? "Outstanding" : "All Paid"}</p>
-                      </Card>
-                    </div>
-
-                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                      <div className="xl:col-span-2 space-y-6">
-                        <Card className="p-6 border shadow-sm">
-                          <CardHeader className="p-0 mb-6">
-                            <CardTitle className="text-lg font-bold">Performance History</CardTitle>
-                          </CardHeader>
-                          <CardContent className="p-0">
-                            {chartData.length > 0 ? (
-                              <PerformanceChart data={chartData} />
-                            ) : (
-                              <div className="h-[250px] flex items-center justify-center text-muted-foreground italic text-sm">
-                                No performance data available
+                  return (
+                    <TabsContent key={student.id} value={student.id} className="space-y-8 animate-in fade-in duration-500 outline-none">
+                      {/* Stats Dashboard */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {/* Attendance Card */}
+                        <Card className="relative overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                          <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 opacity-90" />
+                          <CardContent className="relative z-10 p-6 text-white">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                                <CheckCircle className="w-6 h-6" />
                               </div>
-                            )}
+                              <div className="text-right">
+                                <div className="text-4xl font-black">{attendanceRate.toFixed(1)}%</div>
+                                <p className="text-xs text-white/80 mt-1">Attendance</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-white/90">{student.attendances.filter(a => a.present).length} days present</span>
+                              <TrendingUp className="w-4 h-4" />
+                            </div>
                           </CardContent>
                         </Card>
 
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-bold">Recent Results</h3>
-                            <Link href={`/dashboard/results?studentId=${student.id}`} className="text-sm text-primary hover:underline font-medium">
-                              View All
-                            </Link>
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {student.results.length > 0 ? (
-                              student.results.map((result) => (
-                                <div key={result.id} className="p-4 bg-white rounded-xl border flex items-center justify-between">
-                                  <div>
-                                    <h4 className="font-bold text-sm">{result.exam?.title || result.assignment?.title}</h4>
-                                    <p className="text-xs text-muted-foreground">
-                                      {result.exam?.lesson.subject.name || result.assignment?.lesson.subject.name}
-                                    </p>
-                                  </div>
-                                  <div className={`text-lg font-bold ${
-                                    result.score >= 70 ? "text-green-600" : result.score >= 50 ? "text-orange-600" : "text-red-600"
-                                  }`}>
-                                    {result.score}%
-                                  </div>
-                                </div>
-                              ))
-                            ) : (
-                              <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No recent results</div>
-                            )}
-                          </div>
-                        </div>
+                        {/* Performance Card */}
+                        <Card className="relative overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 opacity-90" />
+                          <CardContent className="relative z-10 p-6 text-white">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                                <Award className="w-6 h-6" />
+                              </div>
+                              <div className="text-right">
+                                <div className="text-4xl font-black">{avgScore.toFixed(1)}%</div>
+                                <p className="text-xs text-white/80 mt-1">Avg. Score</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-white/90">{student.results.length} assessments</span>
+                              <BarChart3 className="w-4 h-4" />
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        {/* Fees Card */}
+                        <Card className={`relative overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-300 group`}>
+                          <div className={`absolute inset-0 bg-gradient-to-br ${pendingFeesAmount > 0 ? "from-red-500 to-rose-600" : "from-emerald-500 to-teal-600"} opacity-90`} />
+                          <CardContent className="relative z-10 p-6 text-white">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                                <Banknote className="w-6 h-6" />
+                              </div>
+                              <div className="text-right">
+                                <div className="text-4xl font-black">₵{pendingFeesAmount.toLocaleString()}</div>
+                                <p className="text-xs text-white/80 mt-1">Fees Due</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-white/90">{pendingFeesAmount > 0 ? "Outstanding" : "All Paid"}</span>
+                              <AlertCircle className="w-4 h-4" />
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        {/* Class Info Card */}
+                        <Card className="relative overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                          <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-600 opacity-90" />
+                          <CardContent className="relative z-10 p-6 text-white">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                                <BookOpen className="w-6 h-6" />
+                              </div>
+                              <div className="text-right">
+                                <div className="text-2xl font-black">{student.class.name}</div>
+                                <p className="text-xs text-white/80 mt-1">Current Class</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-white/90">Grade {student.grade.level}</span>
+                              <GraduationCap className="w-4 h-4" />
+                            </div>
+                          </CardContent>
+                        </Card>
                       </div>
 
-                      <div className="space-y-6">
-                        <Card className="p-6 border shadow-sm">
-                          <CardHeader className="p-0 mb-4">
-                            <CardTitle className="text-lg font-bold">Attendance Log</CardTitle>
-                          </CardHeader>
-                          <CardContent className="p-0 space-y-3">
-                            {student.attendances.map((record) => (
-                              <div key={record.id} className="flex items-center justify-between text-sm py-1 border-b last:border-0">
-                                <span className="font-medium">{format(new Date(record.date), "MMM d, yyyy")}</span>
-                                <Badge variant={record.present ? "outline" : "destructive"} className="text-[10px] px-1.5 h-5">
-                                  {record.present ? "Present" : "Absent"}
+                      {/* Main Content Grid */}
+                      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                        {/* Left Column - Performance & Results */}
+                        <div className="xl:col-span-2 space-y-8">
+                          {/* Performance Chart */}
+                          <Card className="border shadow-xl rounded-2xl overflow-hidden">
+                            <CardHeader className="bg-gradient-to-r from-muted/50 to-muted/30 border-b">
+                              <div className="flex items-center justify-between">
+                                <CardTitle className="text-2xl font-black flex items-center gap-2">
+                                  <BarChart3 className="w-6 h-6 text-primary" />
+                                  Performance Overview
+                                </CardTitle>
+                                <Badge variant="outline" className="text-xs">
+                                  Last {chartData.length} Results
                                 </Badge>
                               </div>
-                            ))}
-                            {student.attendances.length === 0 && (
-                               <div className="text-center text-muted-foreground text-sm py-4 italic">No recent attendance</div>
-                            )}
-                          </CardContent>
-                        </Card>
+                            </CardHeader>
+                            <CardContent className="p-6">
+                              {chartData.length > 0 ? (
+                                <div className="h-[300px]">
+                                  <PerformanceChart data={chartData} />
+                                </div>
+                              ) : (
+                                <div className="h-[300px] flex flex-col items-center justify-center text-muted-foreground">
+                                  <BarChart3 className="w-16 h-16 mb-4 opacity-20" />
+                                  <p className="text-sm italic">No performance data available yet</p>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
 
-                        <Card className="p-6 border shadow-sm">
-                          <CardHeader className="p-0 mb-4">
-                            <CardTitle className="text-lg font-bold">Conduct & Behavior</CardTitle>
-                          </CardHeader>
-                          <CardContent className="p-0 space-y-4">
-                             {student.behaviors.map((bx) => (
-                               <div key={bx.id} className="flex gap-3 py-1 border-b last:border-0">
-                                  <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${
-                                    bx.type === "POSITIVE" ? "bg-green-500" : bx.type === "NEGATIVE" ? "bg-red-500" : "bg-muted-foreground"
-                                  }`} />
-                                  <div>
-                                    <p className="text-sm font-bold">{bx.title}</p>
-                                    <p className="text-xs text-muted-foreground">{format(new Date(bx.date), "MMM d, yyyy")}</p>
-                                  </div>
-                               </div>
-                             ))}
-                             {student.behaviors.length === 0 && (
-                                <p className="text-sm text-muted-foreground italic py-2">No recent behavior reports</p>
-                             )}
-                          </CardContent>
-                        </Card>
+                          {/* Recent Results */}
+                          <Card className="border shadow-xl rounded-2xl overflow-hidden">
+                            <CardHeader className="bg-gradient-to-r from-muted/50 to-muted/30 border-b">
+                              <div className="flex items-center justify-between">
+                                <CardTitle className="text-xl font-black flex items-center gap-2">
+                                  <Award className="w-5 h-5 text-primary" />
+                                  Recent Results
+                                </CardTitle>
+                                <Link href={`/dashboard/results?studentId=${student.id}`}>
+                                  <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
+                                    View All
+                                    <ArrowRight className="w-4 h-4 ml-1" />
+                                  </Button>
+                                </Link>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="p-6">
+                              {student.results.length > 0 ? (
+                                <div className="space-y-3">
+                                  {student.results.map((result) => (
+                                    <div 
+                                      key={result.id} 
+                                      className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border hover:border-primary/50 transition-all"
+                                    >
+                                      <div className="flex items-center gap-4">
+                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg ${
+                                          result.score >= 70 ? "bg-green-100 text-green-700" : 
+                                          result.score >= 50 ? "bg-orange-100 text-orange-700" : 
+                                          "bg-red-100 text-red-700"
+                                        }`}>
+                                          {result.score}%
+                                        </div>
+                                        <div>
+                                          <p className="font-bold">{result.exam?.title || result.assignment?.title}</p>
+                                          <p className="text-sm text-muted-foreground">
+                                            {result.exam?.lesson.subject.name || result.assignment?.lesson.subject.name}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <Badge variant={result.score >= 70 ? "default" : result.score >= 50 ? "secondary" : "destructive"}>
+                                        {result.score >= 70 ? "Excellent" : result.score >= 50 ? "Good" : "Needs Work"}
+                                      </Badge>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="py-12 text-center text-muted-foreground">
+                                  <Award className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                                  <p className="text-sm italic">No results available yet</p>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </div>
+
+                        {/* Right Column - Attendance & Behavior */}
+                        <div className="space-y-8">
+                          {/* Attendance Log */}
+                          <Card className="border shadow-xl rounded-2xl overflow-hidden">
+                            <CardHeader className="bg-gradient-to-r from-muted/50 to-muted/30 border-b">
+                              <CardTitle className="text-lg font-black flex items-center gap-2">
+                                <Calendar className="w-5 h-5 text-primary" />
+                                Attendance Log
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-6">
+                              {student.attendances.length > 0 ? (
+                                <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+                                  {student.attendances.map((record) => (
+                                    <div 
+                                      key={record.id} 
+                                      className="flex items-center justify-between p-3 bg-muted/20 rounded-lg hover:bg-muted/40 transition-colors"
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <div className={`w-2 h-2 rounded-full ${record.present ? "bg-green-500" : "bg-red-500"}`} />
+                                        <span className="text-sm font-medium">
+                                          {format(new Date(record.date), "MMM d, yyyy")}
+                                        </span>
+                                      </div>
+                                      <Badge 
+                                        variant={record.present ? "outline" : "destructive"}
+                                        className="text-xs"
+                                      >
+                                        {record.present ? "Present" : "Absent"}
+                                      </Badge>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="py-12 text-center text-muted-foreground">
+                                  <Calendar className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                                  <p className="text-sm italic">No attendance records</p>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+
+                          {/* Behavior & Conduct */}
+                          <Card className="border shadow-xl rounded-2xl overflow-hidden">
+                            <CardHeader className="bg-gradient-to-r from-muted/50 to-muted/30 border-b">
+                              <CardTitle className="text-lg font-black flex items-center gap-2">
+                                <Activity className="w-5 h-5 text-primary" />
+                                Conduct & Behavior
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-6">
+                              {student.behaviors.length > 0 ? (
+                                <div className="space-y-3">
+                                  {student.behaviors.map((bx) => (
+                                    <div 
+                                      key={bx.id} 
+                                      className="flex gap-3 p-3 bg-muted/20 rounded-lg hover:bg-muted/40 transition-colors"
+                                    >
+                                      <div className={`mt-1 w-3 h-3 rounded-full shrink-0 ${
+                                        bx.type === "POSITIVE" ? "bg-green-500" : 
+                                        bx.type === "NEGATIVE" ? "bg-red-500" : 
+                                        "bg-gray-400"
+                                      }`} />
+                                      <div className="flex-1">
+                                        <p className="text-sm font-bold">{bx.title}</p>
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                          {format(new Date(bx.date), "MMM d, yyyy")}
+                                        </p>
+                                      </div>
+                                      <Badge 
+                                        variant={bx.type === "POSITIVE" ? "default" : "destructive"}
+                                        className="text-xs h-fit"
+                                      >
+                                        {bx.type === "POSITIVE" ? "+" : "-"}
+                                      </Badge>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="py-12 text-center text-muted-foreground">
+                                  <Activity className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                                  <p className="text-sm italic">No behavior reports</p>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </div>
                       </div>
-                    </div>
-                  </TabsContent>
-                );
-              })}
-            </Tabs>
+
+                      {/* Quick Actions Bar */}
+                      <Card className="border shadow-xl rounded-2xl overflow-hidden bg-gradient-to-r from-primary/5 to-primary/10">
+                        <CardContent className="p-6">
+                          <h3 className="text-lg font-black mb-4 flex items-center gap-2">
+                            <MessageSquare className="w-5 h-5 text-primary" />
+                            Quick Actions
+                          </h3>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <Link href="/dashboard/messages" className="block">
+                              <Button variant="outline" className="w-full h-auto py-4 flex flex-col items-center gap-2 hover:bg-primary hover:text-white transition-all">
+                                <MessageSquare className="w-5 h-5" />
+                                <span className="text-xs font-semibold">Contact Teacher</span>
+                              </Button>
+                            </Link>
+                            <Link href={`/dashboard/results?studentId=${student.id}`} className="block">
+                              <Button variant="outline" className="w-full h-auto py-4 flex flex-col items-center gap-2 hover:bg-primary hover:text-white transition-all">
+                                <FileText className="w-5 h-5" />
+                                <span className="text-xs font-semibold">View Reports</span>
+                              </Button>
+                            </Link>
+                            <Link href="/dashboard/fees" className="block">
+                              <Button variant="outline" className="w-full h-auto py-4 flex flex-col items-center gap-2 hover:bg-primary hover:text-white transition-all">
+                                <DollarSign className="w-5 h-5" />
+                                <span className="text-xs font-semibold">Pay Fees</span>
+                              </Button>
+                            </Link>
+                            <Link href="/dashboard/events" className="block">
+                              <Button variant="outline" className="w-full h-auto py-4 flex flex-col items-center gap-2 hover:bg-primary hover:text-white transition-all">
+                                <Calendar className="w-5 h-5" />
+                                <span className="text-xs font-semibold">View Events</span>
+                              </Button>
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                  );
+                })}
+              </Tabs>
+            </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-2xl border-2 border-dashed">
-             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-               <User className="w-8 h-8 text-muted-foreground" />
-             </div>
-             <h2 className="text-2xl font-bold mb-2">No Students Linked</h2>
-             <p className="text-muted-foreground max-w-sm text-center text-sm px-6">
-               Please contact the school office to associate your children's profiles with your account.
-             </p>
-          </div>
+          <Card className="border-2 border-dashed rounded-3xl overflow-hidden">
+            <CardContent className="py-20 text-center">
+              <div className="w-20 h-20 mx-auto bg-muted rounded-full flex items-center justify-center mb-6">
+                <User className="w-10 h-10 text-muted-foreground" />
+              </div>
+              <h2 className="text-3xl font-black mb-3">No Students Linked</h2>
+              <p className="text-muted-foreground max-w-md mx-auto mb-6">
+                Please contact the school office to associate your children's profiles with your parent account.
+              </p>
+              <Link href="/dashboard/messages">
+                <Button size="lg" className="rounded-xl">
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Contact School Office
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         )}
       </div>
     );
