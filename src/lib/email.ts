@@ -3,10 +3,25 @@ import prisma from "./prisma";
 
 // Create reusable transporter
 export async function createTransporter() {
-  // Get email settings from system settings
-  const settings = await prisma.systemSettings.findFirst();
+  try {
+    // Get email settings from system settings
+    const settings = await prisma.systemSettings.findFirst();
 
-  if (!settings?.emailHost || !settings?.emailUser || !settings?.emailPassword) {
+    if (!settings?.emailHost || !settings?.emailUser || !settings?.emailPassword) {
+      throw new Error("Missing email settings in DB");
+    }
+
+    return nodemailer.createTransport({
+      host: settings.emailHost,
+      port: settings.emailPort || 587,
+      secure: false,
+      auth: {
+        user: settings.emailUser,
+        pass: settings.emailPassword,
+      },
+    });
+  } catch (error) {
+    console.warn("Using environment variables for email fallback:", error);
     // Fallback to environment variables
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST || "smtp.gmail.com",
@@ -18,16 +33,6 @@ export async function createTransporter() {
       },
     });
   }
-
-  return nodemailer.createTransport({
-    host: settings.emailHost,
-    port: settings.emailPort || 587,
-    secure: false,
-    auth: {
-      user: settings.emailUser,
-      pass: settings.emailPassword,
-    },
-  });
 }
 
 // Send password reset email

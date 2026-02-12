@@ -3,7 +3,13 @@ import prisma from "./prisma";
 // Generic SMS sending function using configured SMS service
 export async function sendSMS(phone: string, message: string) {
   try {
-    const settings = await prisma.systemSettings.findFirst();
+    let settings;
+    try {
+      settings = await prisma.systemSettings.findFirst();
+    } catch (dbError) {
+      console.warn("Could not fetch settings for SMS, skipping SMS send:", dbError);
+      return { success: false, error: "Database unreachable" };
+    }
 
     if (!settings?.smsApiKey || !settings?.smsApiSecret) {
       console.log("SMS not configured, skipping SMS send");
