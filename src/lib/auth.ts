@@ -148,3 +148,8 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
+// Check for NEXTAUTH_SECRET at runtime
+if (!process.env.NEXTAUTH_SECRET && process.env.NODE_ENV === 'production') {
+  console.error("CRITICAL CONFIG ERROR: NEXTAUTH_SECRET is not defined in production environment!");
+}
+

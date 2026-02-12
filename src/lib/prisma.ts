@@ -2,8 +2,18 @@ import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import pg from 'pg'
 
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+const urlSource = process.env.DATABASE_URL ? 'environment variable' : 'fallback dummy';
+
+if (!isBuildPhase) {
+  console.log(`[Prisma Runtime] Initializing with ${urlSource}`);
+}
+
 const connectionString = process.env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy"
-const pool = new pg.Pool({ connectionString })
+const pool = new pg.Pool({ 
+  connectionString,
+  ssl: { rejectUnauthorized: false } // Required for many serverless/managed DBs like Neon
+})
 const adapter = new PrismaPg(pool)
 
 const globalForPrisma = globalThis as unknown as {
